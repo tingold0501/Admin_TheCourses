@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Typography,
   Card,
@@ -27,7 +27,19 @@ import {
 } from "@/data";
 import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
 
+
 export function Home() {
+  const urlApi = 'http://127.0.0.1:8000/api/';
+  const [users, setUsers] = useState([]);
+
+  useEffect(()=>{
+    fetch(urlApi + "getData")
+      .then((res) => res.json())
+      .then((res) => {
+        setUsers(res.data);
+        console.log(res.data);
+      });
+  })
   return (
     <div className="mt-12">
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
@@ -106,7 +118,7 @@ export function Home() {
             <table className="w-full min-w-[640px] table-auto">
               <thead>
                 <tr>
-                  {["companies", "members", "budget", "completion"].map(
+                  {["name", "members", "budget", "completion"].map(
                     (el) => (
                       <th
                         key={el}
