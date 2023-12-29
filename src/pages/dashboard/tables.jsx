@@ -6,19 +6,26 @@ import {
   Avatar,
   Chip,
   Tooltip,
+  Button,
   Progress,
 } from "@material-tailwind/react";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { authorsTableData, projectsTableData } from "@/data";
 
+
+import ModalUser from "@/component/ModalUser";
+
 export function Tables() {
+
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card>
-        <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
+        <CardHeader variant="gradient" color="gray" className="mb-8 p-6 flex items-center justify-between">
           <Typography variant="h6" color="white">
             Authors Table
           </Typography>
+          <ModalUser/>
+          {/* <Button className="bg-white text-black">Add User</Button> */}
         </CardHeader>
         <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
           <table className="w-full min-w-[640px] table-auto">
@@ -42,11 +49,10 @@ export function Tables() {
             <tbody>
               {authorsTableData.map(
                 ({ img, name, email, job, online, date }, key) => {
-                  const className = `py-3 px-5 ${
-                    key === authorsTableData.length - 1
+                  const className = `py-3 px-5 ${key === authorsTableData.length - 1
                       ? ""
                       : "border-b border-blue-gray-50"
-                  }`;
+                    }`;
 
                   return (
                     <tr key={name}>
@@ -135,11 +141,10 @@ export function Tables() {
             <tbody>
               {projectsTableData.map(
                 ({ img, name, members, budget, completion }, key) => {
-                  const className = `py-3 px-5 ${
-                    key === projectsTableData.length - 1
+                  const className = `py-3 px-5 ${key === projectsTableData.length - 1
                       ? ""
                       : "border-b border-blue-gray-50"
-                  }`;
+                    }`;
 
                   return (
                     <tr key={name}>
@@ -163,9 +168,8 @@ export function Tables() {
                               alt={name}
                               size="xs"
                               variant="circular"
-                              className={`cursor-pointer border-2 border-white ${
-                                key === 0 ? "" : "-ml-2.5"
-                              }`}
+                              className={`cursor-pointer border-2 border-white ${key === 0 ? "" : "-ml-2.5"
+                                }`}
                             />
                           </Tooltip>
                         ))}
