@@ -62,7 +62,7 @@ function ModalUser() {
                 setUsers(res);
                 console.log(res);
             });
-    },[])
+    }, [])
 
     return (
         <div className="flex items-center justify-center ">
@@ -131,10 +131,21 @@ function ModalUser() {
 
                                         <div className="mt-2">
                                             <p className="text-sm text-gray-500">Select role user.</p>
-                                            <select id="countries" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                                <option selected>Choose a country</option>
-                                                <option value="US">United States</option>
+                                            {/* <select defaultValue={idRole} className='mt-2 form-control' onChange={e => setIdRole(e.target.value)}>
+                                                {roles.map(item => (
+                                                    <option key={item.id} value={item.id}>
+                                                        {item.name}
+                                                    </option>
+                                                ))}
+                                            </select> */}
+                                            <select defaultValue={idRole} onChange={e => setIdRole(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                                {users.map(item => (
+                                                    <option key={item.idRole} value={item.idRole}>
+                                                        {item.name}
+                                                    </option>
+                                                ))}
                                             </select>
+
                                         </div>
                                     </div>
                                 </div>
