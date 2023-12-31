@@ -11,8 +11,6 @@ import {
 } from "@material-tailwind/react";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { authorsTableData, projectsTableData } from "@/data";
-
-
 import ModalUser from "@/component/ModalUser";
 import { useEffect, useState } from "react";
 import ModalRole from "@/component/ModalRole";
@@ -22,14 +20,18 @@ export function Tables() {
   const [roles, setRoles] = useState([]);
   const [users, setUsers] = useState([]);
 
+  const deleteRole = (id) => {
+    console.log(id);
+  }
+
   useEffect(() => {
     fetch(urlApi + "getDataRole")
-        .then((res) => res.json())
-        .then((res) => {
-            setRoles(res);
-            console.log(res);
-        });
-}, []);
+      .then((res) => res.json())
+      .then((res) => {
+        setRoles(res);
+        console.log(res);
+      });
+  }, []);
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card>
@@ -37,14 +39,14 @@ export function Tables() {
           <Typography variant="h6" color="white">
             Roles Table
           </Typography>
-          <ModalRole/>
+          <ModalRole />
           {/* <Button className="bg-white text-black">Add User</Button> */}
         </CardHeader>
         <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
           <table className="w-full min-w-[640px] table-auto">
             <thead>
               <tr>
-                {["role name",  "created at","status", "updated at", ""].map((el) => (
+                {["role name", "created at", "status", "updated at", "", ""].map((el) => (
                   <th
                     key={el}
                     className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -63,8 +65,8 @@ export function Tables() {
               {roles.map(
                 (itemRole, key) => {
                   const className = `py-3 px-5 ${key === roles.length - 1
-                      ? ""
-                      : "border-b border-blue-gray-50"
+                    ? ""
+                    : "border-b border-blue-gray-50"
                     }`;
 
                   return (
@@ -87,7 +89,7 @@ export function Tables() {
                         </div>
                       </td>
                       <td className={className}>
-                      <Typography className="text-xs font-semibold text-blue-gray-600">
+                        <Typography className="text-xs font-semibold text-blue-gray-600">
                           {itemRole.created_at}
                         </Typography>
                         {/* <Typography className="text-xs font-normal text-blue-gray-500">
@@ -116,6 +118,17 @@ export function Tables() {
                           Edit
                         </Typography>
                       </td>
+                      <td  className={className}>
+                        <Typography
+                          onClick={(e) => deleteRole(itemRole.id)}
+                          as="a"
+                          href="#"
+                          className="text-xs font-semibold text-blue-gray-600"
+                        >
+                          Delete
+                        </Typography>
+                      </td>
+
                     </tr>
                   );
                 }
@@ -129,7 +142,7 @@ export function Tables() {
           <Typography variant="h6" color="white">
             User Table
           </Typography>
-          <ModalUser/>
+          <ModalUser />
         </CardHeader>
         <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
           <table className="w-full min-w-[640px] table-auto">
@@ -156,8 +169,8 @@ export function Tables() {
               {projectsTableData.map(
                 ({ img, name, members, budget, completion }, key) => {
                   const className = `py-3 px-5 ${key === projectsTableData.length - 1
-                      ? ""
-                      : "border-b border-blue-gray-50"
+                    ? ""
+                    : "border-b border-blue-gray-50"
                     }`;
 
                   return (

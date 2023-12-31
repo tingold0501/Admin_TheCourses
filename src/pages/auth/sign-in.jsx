@@ -5,12 +5,99 @@ import {
   Button,
   Typography,
 } from "@material-tailwind/react";
+import { check } from "prettier";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
 
 
 export function SignIn() {
+  <ToastContainer
+    position="top-right"
+    autoClose={1000}
+    hideProgressBar={false}
+    newestOnTop={false}
+    closeOnClick
+    rtl={false}
+    pauseOnFocusLoss
+    draggable
+    pauseOnHover
+    theme="light"
+  />
+  {/* Same as */ }
+  <ToastContainer />
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const urlApi = 'http://127.0.0.1:8000/api/';
+  const checkLogin = () => {
+    if (email == '') {
+      toast.error('🦄 Email Null!', {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+    else if (password == '') {
+      toast.error('🦄 Password Null!', {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+    else {
+      // Send a POST request
+      axios({
+        method: 'post',
+        url: urlApi + 'checkLogin',
+        data: {
+          email:email,
+          password:password
+        }
+      }).then((res)=>{
+        if(res.data.check == true){
+          toast.success('🦄' + res.data.msg, {
+            position: "top-right",
+            autoClose: 1000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          localStorage.setItem('token',res.data.token);
+          window.location.replace("/dashboard/home");
+        }
+        else if(res.data.check == false){
+          toast.error('🦄' + res.data.msg, {
+            position: "top-right",
+            autoClose: 1000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        }
+      })
+    }
+  }
   return (
     <section className="m-8 flex gap-4">
+      <ToastContainer />
       <div className="w-full lg:w-3/5 mt-24">
         <div className="text-center">
           <Typography variant="h2" className="font-bold mb-4">Sign In</Typography>
@@ -22,6 +109,7 @@ export function SignIn() {
               Your email
             </Typography>
             <Input
+              onChange={(e) => setEmail(e.target.value)}
               size="lg"
               placeholder="name@mail.com"
               className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
@@ -33,6 +121,7 @@ export function SignIn() {
               Password
             </Typography>
             <Input
+              onChange={(e) => setPassword(e.target.value)}
               type="password"
               size="lg"
               placeholder="********"
@@ -60,7 +149,7 @@ export function SignIn() {
             }
             containerProps={{ className: "-ml-2.5" }}
           />
-          <Button className="mt-6" fullWidth>
+          <Button onClick={checkLogin} className="mt-6" fullWidth>
             Sign In
           </Button>
 
