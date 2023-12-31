@@ -3,7 +3,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from "react";
 import axios from 'axios';
-function ModalUser() {
+function ModalRole() {
     <ToastContainer
         position="top-right"
         autoClose={5000}
@@ -18,17 +18,13 @@ function ModalUser() {
     />
     {/* Same as */ }
     <ToastContainer />
-
     const urlApi = 'http://127.0.0.1:8000/api/';
-    const [roles, setRoles] = useState([]);
     const [showModal, setShowModal] = useState(false);
-    const [email, setEmail] = useState('');
-    const [name, setName] = useState('');
-    const [idRole, setIdRole] = useState(0);
-    const subscribeToNewUser = () => {
-        if (email == "") {
-            console.log("Email Null");
-            toast.error('🦄 Email is null!', {
+    const [roleName, setNameRole] = useState('');
+
+    const subscribeToNewRole = () =>{
+        if(roleName == ''){
+            toast.error('🦄 Name Role is null!', {
                 position: "top-right",
                 autoClose: 1000,
                 hideProgressBar: false,
@@ -39,30 +35,16 @@ function ModalUser() {
                 theme: "light",
             });
         }
-        else if (name == "") {
-            toast.error('🦄 Name is null!', {
-                position: "top-right",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
-        }
-        else {
+        else{
             axios({
                 method: 'post',
-                url: urlApi + 'addUser',
+                url: urlApi + 'addRole',
                 data: {
-                    email: email,
-                    name: name,
-                    idRole: idRole
+                    roleName:roleName
                 }
-            }).then((res) => {
-                if (res.data.check == true) {
-                    toast.success('🦄 Add new user success!', {
+            }).then((res)=>{
+                if(res.data.check == true){
+                    toast.success('🦄 Add new Role success!', {
                         position: "top-right",
                         autoClose: 1000,
                         hideProgressBar: false,
@@ -74,32 +56,8 @@ function ModalUser() {
                     });
                     window.location.reload();
                 }
-                if (res.data.msg.name) {
-                    toast.success('🦄' + res.data.msg.name, {
-                        position: "top-right",
-                        autoClose: 1000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "light",
-                    });
-                }
-                else if (res.data.msg.email) {
-                    toast.warning('🦄' + res.data.msg.email, {
-                        position: "top-right",
-                        autoClose: 1000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "light",
-                    });
-                }
-                else if (res.data.msg.idRole) {
-                    toast.warning('🦄' + res.data.msg.idRole, {
+                else if(res.data.msg.roleName){
+                    toast.success('🦄' +res.data.msg.roleName, {
                         position: "top-right",
                         autoClose: 1000,
                         hideProgressBar: false,
@@ -113,20 +71,7 @@ function ModalUser() {
             })
         }
     }
-    const handleRoleSelection = (e) => {
-        const selectedOption = e.target.options[e.target.selectedIndex];
-        const selectedRoleId = selectedOption.value;
-        console.log("Selected Role ID:", selectedRoleId);
-        setIdRole(selectedRoleId);
-    };
-    useEffect(() => {
-        fetch(urlApi + "getDataRole")
-            .then((res) => res.json())
-            .then((res) => {
-                setRoles(res);
-                console.log(res);
-            });
-    }, []);
+    
     return (
         <div className="flex items-center justify-center ">
             <ToastContainer />
@@ -135,7 +80,7 @@ function ModalUser() {
                     onClick={() => setShowModal(true)}
                     className="w-full px-4 py-2 text-sm  font-medium text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"
                 >
-                    Add User
+                    Add Role
                 </button>
                 <div
                     style={{ display: showModal ? 'block' : 'none' }}
@@ -169,57 +114,25 @@ function ModalUser() {
                                     </div>
                                     <div className="w-full mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                                         <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
-                                            Subscribe New User
+                                            Subscribe New Role
                                         </h3>
-                                        <div className="mt-2">
-                                            <p className="text-sm text-gray-500">Enter email user.</p>
-                                            <input
-                                                type="email"
-                                                value={email}
-                                                onChange={(e) => setEmail(e.target.value)}
-                                                className="mt-2 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring focus:border-blue-500"
-                                                placeholder="name@example.com"
-                                            />
-                                        </div>
-                                        <div className="mt-2">
-                                            <p className="text-sm text-gray-500">Enter  full name user.</p>
-                                            <input
-                                                type="text"
-                                                value={name}
-                                                onChange={(e) => setName(e.target.value)}
-                                                className="mt-2 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring focus:border-blue-500"
-                                                placeholder="Pham Van A"
-                                            />
-                                        </div>
 
                                         <div className="mt-2">
-                                            <p className="text-sm text-gray-500">Select role user.</p>
-                                            {/* <select defaultValue={idRole} className='mt-2 form-control' onChange={e => setIdRole(e.target.value)}>
-                                                {roles.map(item => (
-                                                    <option key={item.id} value={item.id}>
-                                                        {item.name}
-                                                    </option>
-                                                ))}
-                                            </select> */}
-                                            <select
-                                                value={idRole || ""}
-                                                onChange={handleRoleSelection}
-                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            >
-                                                <option value="" disabled>Select Role</option>
-                                                {roles.map((item) => (
-                                                    <option key={item.id} value={item.id}>
-                                                        {item.name}
-                                                    </option>
-                                                ))}
-                                            </select>
+                                            <p className="text-sm text-gray-500">Enter Name Role.</p>
+                                            <input
+                                                type="text"
+                                                value={roleName}
+                                                onChange={(e) =>setNameRole(e.target.value)}
+                                                className="mt-2 p-2 border text-black border-gray-300 rounded-md w-full focus:outline-none focus:ring focus:border-blue-500"
+                                                placeholder="Admin"
+                                            />
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                                 <button
-                                    onClick={subscribeToNewUser}
+                                    onClick={subscribeToNewRole}
                                     type="button"
                                     className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
                                 >
@@ -241,4 +154,4 @@ function ModalUser() {
     )
 }
 
-export default ModalUser
+export default ModalRole

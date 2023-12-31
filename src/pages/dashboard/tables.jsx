@@ -14,24 +14,37 @@ import { authorsTableData, projectsTableData } from "@/data";
 
 
 import ModalUser from "@/component/ModalUser";
+import { useEffect, useState } from "react";
+import ModalRole from "@/component/ModalRole";
 
 export function Tables() {
+  const urlApi = 'http://127.0.0.1:8000/api/';
+  const [roles, setRoles] = useState([]);
+  const [users, setUsers] = useState([]);
 
+  useEffect(() => {
+    fetch(urlApi + "getDataRole")
+        .then((res) => res.json())
+        .then((res) => {
+            setRoles(res);
+            console.log(res);
+        });
+}, []);
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card>
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6 flex items-center justify-between">
           <Typography variant="h6" color="white">
-            Authors Table
+            Roles Table
           </Typography>
-          <ModalUser/>
+          <ModalRole/>
           {/* <Button className="bg-white text-black">Add User</Button> */}
         </CardHeader>
         <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
           <table className="w-full min-w-[640px] table-auto">
             <thead>
               <tr>
-                {["author", "function", "status", "employed", ""].map((el) => (
+                {["role name",  "created at","status", "updated at", ""].map((el) => (
                   <th
                     key={el}
                     className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -47,51 +60,51 @@ export function Tables() {
               </tr>
             </thead>
             <tbody>
-              {authorsTableData.map(
-                ({ img, name, email, job, online, date }, key) => {
-                  const className = `py-3 px-5 ${key === authorsTableData.length - 1
+              {roles.map(
+                (itemRole, key) => {
+                  const className = `py-3 px-5 ${key === roles.length - 1
                       ? ""
                       : "border-b border-blue-gray-50"
                     }`;
 
                   return (
-                    <tr key={name}>
+                    <tr key={itemRole.name}>
                       <td className={className}>
                         <div className="flex items-center gap-4">
-                          <Avatar src={img} alt={name} size="sm" variant="rounded" />
+                          {/* <Avatar src={img} alt={name} size="sm" variant="rounded" /> */}
                           <div>
                             <Typography
                               variant="small"
                               color="blue-gray"
                               className="font-semibold"
                             >
-                              {name}
+                              {itemRole.name}
                             </Typography>
-                            <Typography className="text-xs font-normal text-blue-gray-500">
+                            {/* <Typography className="text-xs font-normal text-blue-gray-500">
                               {email}
-                            </Typography>
+                            </Typography> */}
                           </div>
                         </div>
                       </td>
                       <td className={className}>
-                        <Typography className="text-xs font-semibold text-blue-gray-600">
-                          {job[0]}
+                      <Typography className="text-xs font-semibold text-blue-gray-600">
+                          {itemRole.created_at}
                         </Typography>
-                        <Typography className="text-xs font-normal text-blue-gray-500">
+                        {/* <Typography className="text-xs font-normal text-blue-gray-500">
                           {job[1]}
-                        </Typography>
+                        </Typography> */}
                       </td>
                       <td className={className}>
                         <Chip
                           variant="gradient"
-                          color={online ? "green" : "blue-gray"}
-                          value={online ? "online" : "offline"}
+                          color={itemRole.status ? "green" : "blue-gray"}
+                          value={itemRole.status ? "Opening" : "Closing"}
                           className="py-0.5 px-2 text-[11px] font-medium w-fit"
                         />
                       </td>
                       <td className={className}>
                         <Typography className="text-xs font-semibold text-blue-gray-600">
-                          {date}
+                          {itemRole.updated_at}
                         </Typography>
                       </td>
                       <td className={className}>
@@ -112,10 +125,11 @@ export function Tables() {
         </CardBody>
       </Card>
       <Card>
-        <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
+        <CardHeader variant="gradient" color="gray" className="mb-8 p-6 flex items-center justify-between">
           <Typography variant="h6" color="white">
-            Projects Table
+            User Table
           </Typography>
+          <ModalUser/>
         </CardHeader>
         <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
           <table className="w-full min-w-[640px] table-auto">
