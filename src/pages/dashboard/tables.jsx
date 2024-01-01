@@ -14,14 +14,31 @@ import { authorsTableData, projectsTableData } from "@/data";
 import ModalUser from "@/component/ModalUser";
 import { useEffect, useState } from "react";
 import ModalRole from "@/component/ModalRole";
+import Swal from "sweetalert2";
 
 export function Tables() {
   const urlApi = 'http://127.0.0.1:8000/api/';
   const [roles, setRoles] = useState([]);
   const [users, setUsers] = useState([]);
-
+ 
   const deleteRole = (id) => {
-    console.log(id);
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted." + roles.name,
+          icon: "success"
+        });
+      }
+    });
   }
 
   useEffect(() => {
