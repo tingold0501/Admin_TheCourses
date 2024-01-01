@@ -83,6 +83,10 @@ export function Tables() {
     });
   }
 
+  const deleteUser = (id) =>{
+    
+  }
+
   useEffect(() => {
     fetch(urlApi + "getDataRole")
       .then((res) => res.json())
