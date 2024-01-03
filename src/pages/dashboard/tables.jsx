@@ -8,6 +8,7 @@ import {
   Tooltip,
   Button,
   Progress,
+  input,
 } from "@material-tailwind/react";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { authorsTableData, projectsTableData } from "@/data";
@@ -35,8 +36,14 @@ export function Tables() {
   {/* Same as */ }
   <ToastContainer />
   const urlApi = 'http://127.0.0.1:8000/api/';
+  const [isEditUser, setIsEditUser] = useState(false);
+  const [editingUserId, setEditingUserId] = useState(null);
   const [roles, setRoles] = useState([]);
   const [users, setUsers] = useState([]);
+  const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [idRole, setIdRole] = useState(0);
+
 
   const deleteRole = (id) => {
     Swal.fire({
@@ -83,8 +90,113 @@ export function Tables() {
     });
   }
 
-  const deleteUser = (id) =>{
-    
+  const deleteUser = (id, name) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      html: "<b></b>" + name,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios({
+          method: 'post',
+          url: urlApi + 'delete',
+          data: {
+            id: id
+          }
+        }).then((res) => {
+          if (res.data.check == true) {
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your user has been deleted.",
+              icon: "success"
+            });
+            window.location.reload();
+          }
+          else if (res.data.check == false) {
+            toast.error('🦄' + res.data.msg,
+              {
+                position: "top-right",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+              });
+          }
+        })
+      }
+    });
+  }
+
+  const editUser = (idUser) => {
+    setIsEditUser(true);
+    setEditingUserId(idUser);
+    axios({
+      method: 'post',
+      url: urlApi + 'edit',
+      data: {
+        id: editingUserId,
+        userName: userName,
+        userEmail: userEmail
+      }
+    }).then((res) => {
+      if (res.data.check == true) {
+        toast.success('🦄 Edit Success',
+          {
+            position: "top-right",
+            autoClose: 1000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+      }
+      else if (res.data.check == false) {
+        if (res.data.msg.userName) {
+          toast.error('🦄' + res.data.msg.userName,
+            {
+              position: "top-right",
+              autoClose: 1000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+        }
+        else if (res.data.msg.userEmail) {
+          toast.error('🦄' + res.data.msg.userEmail,
+            {
+              position: "top-right",
+              autoClose: 1000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+        }
+
+      }
+    })
+  }
+
+  const saveEditUser = () => {
+    setIsEditUser(false);
+    setEditingUserId(null);
+    console.log("Edit" + isEditUser);
+
   }
 
   useEffect(() => {
@@ -95,6 +207,7 @@ export function Tables() {
         console.log(res);
       });
   }, []);
+
   useEffect(() => {
     fetch(urlApi + "getData")
       .then((res) => res.json())
@@ -213,7 +326,7 @@ export function Tables() {
           <Typography variant="h6" color="white">
             Users Table
           </Typography>
-          <ModalUser/>
+          <ModalUser />
           {/* <Button className="bg-white text-black">Add User</Button> */}
         </CardHeader>
         <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
@@ -245,42 +358,70 @@ export function Tables() {
 
                   return (
                     <tr key={itemUsers.name}>
-                      <td className={className}>
-                        <div className="flex items-center gap-4">
-                          {/* <Avatar src={img} alt={name} size="sm" variant="rounded" /> */}
-                          <div>
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-semibold"
-                            >
-                              {itemUsers.name}
-                            </Typography>
-                            {/* <Typography className="text-xs font-normal text-blue-gray-500">
+                      {isEditUser && editingUserId === itemUsers.id ? (
+                        <input
+                          className="w-full mt-5 ml-4"
+                          type="text"
+                          placeholder={itemUsers.name}
+                          // Sử dụng giá trị hiện tại
+                          // Cập nhật giá trị khi người dùng thay đổi
+                          onChange={(e) => setUserName(e.target.value, 'name')}
+                        />
+                      ) : (
+                        <td className={className}>
+                          <div className="flex items-center gap-4">
+                            {/* <Avatar src={img} alt={name} size="sm" variant="rounded" /> */}
+                            <div>
+                              <Typography
+                                variant="small"
+                                color="blue-gray"
+                                className="font-semibold"
+                              >
+                                {itemUsers.name}
+                              </Typography>
+                              {/* <Typography className="text-xs font-normal text-blue-gray-500">
                               {email}
                             </Typography> */}
+                            </div>
                           </div>
-                        </div>
+                        </td>
+
+                      )}
+
+                      <td className={className}>
+                        {isEditUser && editingUserId == itemUsers.id ? (
+                          <input
+                            className="w-full mt-2"
+                            type="text"
+                            placeholder={itemUsers.email}
+                            // Sử dụng giá trị hiện tại
+                            // Cập nhật giá trị khi người dùng thay đổi
+                            onChange={(e) => setUserEmail(e.target.value, 'email')}
+                          />
+                        ) : (
+                          <div className="flex items-center gap-4">
+                            {/* <Avatar src={img} alt={name} size="sm" variant="rounded" /> */}
+                            <div>
+                              <Typography
+                                variant="small"
+                                color="blue-gray"
+                                className="font-semibold"
+                              >
+                                {itemUsers.email}
+                              </Typography>
+                              {/* <Typography className="text-xs font-normal text-blue-gray-500">
+                              {email}
+                            </Typography> */}
+                            </div>
+                          </div>
+                        )}
+
                       </td>
                       <td className={className}>
                         <div className="flex items-center gap-4">
-                          {/* <Avatar src={img} alt={name} size="sm" variant="rounded" /> */}
-                          <div>
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-semibold"
-                            >
-                              {itemUsers.email}
-                            </Typography>
-                            {/* <Typography className="text-xs font-normal text-blue-gray-500">
-                              {email}
-                            </Typography> */}
-                          </div>
-                        </div>
-                      </td>
-                      <td className={className}>
-                        <div className="flex items-center gap-4">
+
+
+
                           {roles.map((role) => {
                             // Thêm điều kiện để chỉ hiển thị thông tin của vai trò của người dùng
                             if (role.id === itemUsers.idRole) {
@@ -323,17 +464,32 @@ export function Tables() {
                         </Typography>
                       </td>
                       <td className={className}>
-                        <Typography
-                          as="a"
-                          href="#"
-                          className="text-xs font-semibold text-blue-gray-600"
-                        >
-                          Edit
-                        </Typography>
+                        {isEditUser && editingUserId === itemUsers.id ? (
+                          <Typography
+                            onClick={(e) => saveEditUser()}
+                            as="a"
+                            href="#"
+                            className="text-xs font-semibold text-blue-gray-600"
+                          >
+                            Save
+                          </Typography>
+
+                        ) : (
+                          <Typography
+                            onClick={(e) => editUser(itemUsers.id)}
+                            as="a"
+                            href="#"
+                            className="text-xs font-semibold text-blue-gray-600"
+                          >
+                            Edit
+                          </Typography>
+
+                        )}
+
                       </td>
                       <td className={className}>
                         <Typography
-                          onClick={(e) => deleteRole(itemUsers.id)}
+                          onClick={(e) => deleteUser(itemUsers.id, itemUsers.name)}
                           as="a"
                           href="#"
                           className="text-xs font-semibold text-blue-gray-600"
@@ -349,6 +505,7 @@ export function Tables() {
           </table>
         </CardBody>
       </Card>
+
       {/* <Card>
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6 flex items-center justify-between">
           <Typography variant="h6" color="white">
