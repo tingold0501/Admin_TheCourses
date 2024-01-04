@@ -177,7 +177,7 @@ function ModalUser() {
                                                 type="email"
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
-                                                className="mt-2 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring focus:border-blue-500"
+                                                className="mt-2 text-black p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring focus:border-blue-500"
                                                 placeholder="name@example.com"
                                             />
                                         </div>
@@ -187,7 +187,7 @@ function ModalUser() {
                                                 type="text"
                                                 value={name}
                                                 onChange={(e) => setName(e.target.value)}
-                                                className="mt-2 p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring focus:border-blue-500"
+                                                className="mt-2 p-2 text-black border border-gray-300 rounded-md w-full focus:outline-none focus:ring focus:border-blue-500"
                                                 placeholder="Pham Van A"
                                             />
                                         </div>
