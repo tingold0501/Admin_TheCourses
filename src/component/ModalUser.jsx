@@ -194,13 +194,7 @@ function ModalUser() {
 
                                         <div className="mt-2">
                                             <p className="text-sm text-gray-500">Select role user.</p>
-                                            {/* <select defaultValue={idRole} className='mt-2 form-control' onChange={e => setIdRole(e.target.value)}>
-                                                {roles.map(item => (
-                                                    <option key={item.id} value={item.id}>
-                                                        {item.name}
-                                                    </option>
-                                                ))}
-                                            </select> */}
+                                         
                                             <select
                                                 value={idRole || ""}
                                                 onChange={handleRoleSelection}
@@ -210,7 +204,6 @@ function ModalUser() {
                                                 {roles.map((item) => (
                                                     <option key={item.id} value={item.id}>
                                                         {item.name}
-                                                        
                                                     </option>
                                                 ))}
                                             </select>

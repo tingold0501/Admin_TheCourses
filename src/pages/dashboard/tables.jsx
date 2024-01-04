@@ -43,12 +43,17 @@ export function Tables() {
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [idRole, setIdRole] = useState(0);
+  const [status,setStatus] = useState(true);
+  const [rowIdRoles, setRowIdRoles] = useState({});
+  const [initialUserData, setInitialUserData] = useState(null);
 
 
-  const deleteRole = (id) => {
+
+  const deleteRole = (id, name) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
+      html: "<b></b>" + name,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -138,65 +143,127 @@ export function Tables() {
   const editUser = (idUser) => {
     setIsEditUser(true);
     setEditingUserId(idUser);
-    axios({
-      method: 'post',
-      url: urlApi + 'edit',
-      data: {
-        id: editingUserId,
-        userName: userName,
-        userEmail: userEmail
-      }
-    }).then((res) => {
-      if (res.data.check == true) {
-        toast.success('🦄 Edit Success',
-          {
-            position: "top-right",
-            autoClose: 1000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-      }
-      else if (res.data.check == false) {
-        if (res.data.msg.userName) {
-          toast.error('🦄' + res.data.msg.userName,
-            {
-              position: "top-right",
-              autoClose: 1000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-            });
-        }
-        else if (res.data.msg.userEmail) {
-          toast.error('🦄' + res.data.msg.userEmail,
-            {
-              position: "top-right",
-              autoClose: 1000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-            });
-        }
+    console.log("Editing User ID: " + idUser);
+    // Lấy giá trị idRole của người dùng hiện tại và cập nhật vào state idRole
+    const currentUserRole = users.find((user) => user.id === idUser)?.idRole;
+    const currentUser = users.find((user) => user.id === idUser);
+    setInitialUserData({
+      name: currentUser.name,
+      email: currentUser.email,
+      idRole: currentUser.idRole,
+      status: currentUser.status,
+    });
 
-      }
-    })
+    setIdRole(currentUserRole || "");
+    // Log giá trị cũ
+    console.log("Old User Data:", {
+      name: currentUser.name,
+      email: currentUser.email,
+      idRole: currentUser.idRole,
+      status: currentUser.status,
+    });
+
+
   }
+
+  const handleRoleSelection = (e) => {
+    const selectedOption = e.target.options[e.target.selectedIndex];
+    const selectedRoleId = selectedOption.value;
+    console.log("Selected Role ID:", selectedRoleId);
+    setIdRole(selectedRoleId);
+  };
 
   const saveEditUser = () => {
     setIsEditUser(false);
     setEditingUserId(null);
     console.log("Edit" + isEditUser);
 
+      // Kiểm tra xem email, name, idRole, status có thay đổi không
+    const hasNameChanged = initialUserData.name !== userName;
+    const hasEmailChanged = initialUserData.email !== userEmail;
+    const hasIdRoleChanged = initialUserData.idRole !== idRole;
+    const hasStatusChanged = initialUserData.status !== status;
+
+    setUserName(userName);
+    setUserEmail(userEmail);
+    if (!hasNameChanged) {
+      setUserName(initialUserData.name);
+      console.log(userName);
+    }
+    // if (!hasEmailChanged) {
+    //   setUserEmail(initialUserData.email);
+    //   console.log(userEmail);
+    // }
+    // if (!hasIdRoleChanged) {
+    //   setIdRole(initialUserData.idRole);
+    //   console.log(idRole);
+    // }
+    // if (!hasStatusChanged) {
+    //   setUserStatus(initialUserData.status);
+    //   console.log(status);
+    // }
+    console.log({
+          userName,
+          userEmail,
+          idRole,
+          status,
+        });
+
+    // axios({
+    //   method: 'post',
+    //   url: urlApi + 'edit',
+    //   data: {
+    //     id: editingUserId,
+    //     userName: userName,
+    //     userEmail: userEmail,
+    //     idRole: currentUser.idRole,
+    //     status: currentUser.status,
+    //   }
+    // }).then((res) => {
+    //   if (res.data.check == true) {
+    //     toast.success('🦄 Edit Success',
+    //       {
+    //         position: "top-right",
+    //         autoClose: 1000,
+    //         hideProgressBar: false,
+    //         closeOnClick: true,
+    //         pauseOnHover: true,
+    //         draggable: true,
+    //         progress: undefined,
+    //         theme: "light",
+    //       });
+    //       window.location.reload();
+    //   }
+    //   else if (res.data.check == false) {
+    //     if (res.data.msg.userName) {
+    //       toast.error('🦄' + res.data.msg.userName,
+    //         {
+    //           position: "top-right",
+    //           autoClose: 1000,
+    //           hideProgressBar: false,
+    //           closeOnClick: true,
+    //           pauseOnHover: true,
+    //           draggable: true,
+    //           progress: undefined,
+    //           theme: "light",
+    //         });
+    //     }
+    //     else if (res.data.msg.userEmail) {
+    //       toast.error('🦄' + res.data.msg.userEmail,
+    //         {
+    //           position: "top-right",
+    //           autoClose: 1000,
+    //           hideProgressBar: false,
+    //           closeOnClick: true,
+    //           pauseOnHover: true,
+    //           draggable: true,
+    //           progress: undefined,
+    //           theme: "light",
+    //         });
+    //     }
+
+    //   }
+    // })
   }
 
   useEffect(() => {
@@ -304,7 +371,7 @@ export function Tables() {
                       </td>
                       <td className={className}>
                         <Typography
-                          onClick={(e) => deleteRole(itemRole.id)}
+                          onClick={(e) => deleteRole(itemRole.id, itemRole.name)}
                           as="a"
                           href="#"
                           className="text-xs font-semibold text-blue-gray-600"
@@ -358,7 +425,7 @@ export function Tables() {
 
                   return (
                     <tr key={itemUsers.name}>
-                      {isEditUser && editingUserId === itemUsers.id ? (
+                      {isEditUser && editingUserId === itemUsers.id && initialUserData ? (
                         <input
                           className="w-full mt-5 ml-4"
                           type="text"
@@ -391,7 +458,7 @@ export function Tables() {
                       <td className={className}>
                         {isEditUser && editingUserId == itemUsers.id ? (
                           <input
-                            className="w-full mt-2"
+                            className="w-full "
                             type="text"
                             placeholder={itemUsers.email}
                             // Sử dụng giá trị hiện tại
@@ -419,28 +486,43 @@ export function Tables() {
                       </td>
                       <td className={className}>
                         <div className="flex items-center gap-4">
-
-
-
-                          {roles.map((role) => {
-                            // Thêm điều kiện để chỉ hiển thị thông tin của vai trò của người dùng
-                            if (role.id === itemUsers.idRole) {
-                              return (
-                                <div key={role.id}>
-                                  <Typography
-                                    variant="small"
-                                    color="blue-gray"
-                                    className="font-semibold"
-                                  >
-                                    {role.name}
-                                  </Typography>
-                                </div>
-                              );
-                            }
-                            return null; // Tránh trường hợp không thỏa mãn điều kiện
-                          })}
+                          {isEditUser && editingUserId === itemUsers.id && initialUserData ? (
+                            <select
+                              value={idRole || itemUsers.idRole}
+                              onChange={handleRoleSelection}
+                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            >
+                              <option value="" disabled>Select Role</option>
+                              {roles.map((item) => (
+                                <option key={item.id} value={item.id}>
+                                  {item.name}
+                                </option>
+                              ))}
+                            </select>
+                          ) : (
+                            <div>
+                              {roles.map((role) => {
+                                // Thêm điều kiện để chỉ hiển thị thông tin của vai trò của người dùng
+                                if (role.id === itemUsers.idRole) {
+                                  return (
+                                    <div key={role.id}>
+                                      <Typography
+                                        variant="small"
+                                        color="blue-gray"
+                                        className="font-semibold"
+                                      >
+                                        {role.name}
+                                      </Typography>
+                                    </div>
+                                  );
+                                }
+                                return null; // Tránh trường hợp không thỏa mãn điều kiện
+                              })}
+                            </div>
+                          )}
                         </div>
                       </td>
+
 
                       <td className={className}>
                         <Typography className="text-xs font-semibold text-blue-gray-600">
@@ -451,12 +533,24 @@ export function Tables() {
                         </Typography> */}
                       </td>
                       <td className={className}>
-                        <Chip
-                          variant="gradient"
-                          color={itemUsers.status ? "green" : "blue-gray"}
-                          value={itemUsers.status ? "Opening" : "Closing"}
-                          className="py-0.5 px-2 text-[11px] font-medium w-fit"
-                        />
+                        {isEditUser && editingUserId === itemUsers.id && initialUserData ? (
+                          <select
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            defaultValue={initialUserData.status}
+                          >
+                          
+                            <option value={1}>Opening</option>
+                            <option value={0}>Closing</option>
+                          </select>
+                        ) : (
+                          <Chip
+                            variant="gradient"
+                            color={itemUsers.status ? "green" : "blue-gray"}
+                            value={itemUsers.status ? "Opening" : "Closing"}
+                            className="py-0.5 px-2 text-[11px] font-medium w-fit"
+                          />
+                        )}
+
                       </td>
                       <td className={className}>
                         <Typography className="text-xs font-semibold text-blue-gray-600">
