@@ -3,9 +3,9 @@ import { Dashboard, Auth } from "@/layouts";
 import { SignIn } from "./pages/auth";
 
 function App() {
-  if(!localStorage.getItem("token")){
-    return <SignIn/>
-  }
+  // if(!localStorage.getItem("token")){
+  //   return <SignIn/>
+  // }
   return (
     <Routes>
       <Route path="/dashboard/*" element={<Dashboard />} />
