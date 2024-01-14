@@ -3,6 +3,12 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from "react";
 import axios from 'axios';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
+import { Box } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
+import SaveIcon from '@mui/icons-material/Save';
 function ModalUser() {
     <ToastContainer
         position="top-right"
@@ -18,19 +24,33 @@ function ModalUser() {
     />
     {/* Same as */ }
     <ToastContainer />
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+    };
+    const [loading, setLoading] = useState(false);
 
-    const urlApi = 'http://127.0.0.1:8000/api/';
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+    const urlAPI = 'http://localhost/api/';
     const [roles, setRoles] = useState([]);
-    const [showModal, setShowModal] = useState(false);
-    const [email, setEmail] = useState('');
     const [name, setName] = useState('');
-    const [idRole, setIdRole] = useState(0);
-    const subscribeToNewUser = () => {
-        if (email == "") {
-            console.log("Email Null");
-            toast.error('🦄 Email is null!', {
+    const [email, setEmail] = useState('');
+
+    const submitAddUser = () => {
+        if (name == '') {
+            toast.error('🦄 Full Name User is Null!', {
                 position: "top-right",
-                autoClose: 1000,
+                autoClose: 2000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -39,10 +59,10 @@ function ModalUser() {
                 theme: "light",
             });
         }
-        else if (name == "") {
-            toast.error('🦄 Name is null!', {
+        else if (email == '') {
+            toast.error('🦄 Email User is Null!', {
                 position: "top-right",
-                autoClose: 1000,
+                autoClose: 2000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -52,75 +72,21 @@ function ModalUser() {
             });
         }
         else {
+            setLoading(true);
             axios({
                 method: 'post',
-                url: urlApi + 'addUser',
+                url: urlAPI + 'addNewUser',
                 data: {
-                    email: email,
                     name: name,
-                    idRole: idRole
+                    email: email,
                 }
             }).then((res) => {
-                if (res.data.check == true) {
-                    toast.success('🦄 Add new user success!', {
-                        position: "top-right",
-                        autoClose: 1000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "light",
-                    });
-                    window.location.reload();
-                }
-                if (res.data.msg.name) {
-                    toast.success('🦄' + res.data.msg.name, {
-                        position: "top-right",
-                        autoClose: 1000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "light",
-                    });
-                }
-                else if (res.data.msg.email) {
-                    toast.warning('🦄' + res.data.msg.email, {
-                        position: "top-right",
-                        autoClose: 1000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "light",
-                    });
-                }
-                else if (res.data.msg.idRole) {
-                    toast.warning('🦄' + res.data.msg.idRole, {
-                        position: "top-right",
-                        autoClose: 1000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "light",
-                    });
-                }
+                console.log(res);
             })
         }
     }
-    const handleRoleSelection = (e) => {
-        const selectedOption = e.target.options[e.target.selectedIndex];
-        const selectedRoleId = selectedOption.value;
-        console.log("Selected Role ID:", selectedRoleId);
-        setIdRole(selectedRoleId);
-    };
     useEffect(() => {
-        fetch(urlApi + "getDataRole")
+        fetch(urlAPI + "getDataRole")
             .then((res) => res.json())
             .then((res) => {
                 setRoles(res);
@@ -128,77 +94,116 @@ function ModalUser() {
             });
     }, []);
     return (
-        <div className="flex items-center justify-center ">
+        <div>
             <ToastContainer />
-            <div x-data="{ showModal: true, email: '' }">
-                <button
-                    onClick={() => setShowModal(true)}
-                    className="w-full px-4 py-2 text-sm  font-medium text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"
-                >
-                    Add User
-                </button>
-                <div
-                    style={{ display: showModal ? 'block' : 'none' }}
-                    className="fixed inset-0 transition-opacity"
-                    aria-hidden="true"
-                    onClick={() => setShowModal(false)}
-                >
-                    <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-                </div>
-                <div
-                    style={{ display: showModal ? 'block' : 'none' }}
-                    className="fixed z-10 inset-0 overflow-y-auto"
-                >
-                    <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                        <div className="w-full inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                            <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                <div className="sm:flex sm:items-start">
-                                    <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
-                                        <svg
-                                            width="64px"
-                                            height="64px"
-                                            viewBox="0 0 24 24"
-                                            className="h-6 w-6 text-blue-600"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            stroke="#2563eb"
-                                            strokeWidth="0.36"
-                                        >
-                                            {/* ... (SVG content) ... */}
-                                        </svg>
-                                    </div>
-                                    <div className="w-full mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                                        <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
-                                            Subscribe New User
-                                        </h3>
-                                        <div className="mt-2">
-                                            <p className="text-sm text-gray-500">Enter email user.</p>
-                                            <input
-                                                type="email"
-                                                value={email}
-                                                onChange={(e) => setEmail(e.target.value)}
-                                                className="mt-2 text-black p-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring focus:border-blue-500"
-                                                placeholder="name@example.com"
-                                            />
-                                        </div>
-                                        <div className="mt-2">
-                                            <p className="text-sm text-gray-500">Enter  full name user.</p>
-                                            <input
-                                                type="text"
-                                                value={name}
-                                                onChange={(e) => setName(e.target.value)}
-                                                className="mt-2 p-2 text-black border border-gray-300 rounded-md w-full focus:outline-none focus:ring focus:border-blue-500"
-                                                placeholder="Pham Van A"
-                                            />
-                                        </div>
+            <Button variant="outlined" color='success' onClick={handleOpen}>Open Modal</Button>
+            <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={style}>
+                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                        User Modal
+                    </Typography>
+                    <Typography id="modal-modal-description" >
+                        <div className="w-full max-w-lg">
+                            <div className="flex flex-wrap -mx-3 mb-6">
+                                <div className="w-full  px-3 mb-6 md:mb-0">
+                                    <label
+                                        className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                                        htmlFor="grid-first-name"
+                                    >
+                                        Full Name
+                                    </label>
+                                    <input
+                                        className="appearance-none block w-full bg-gray-200 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                                        id="grid-first-name"
+                                        type="text"
+                                        placeholder="Nguyen Van A"
+                                        onChange={(e) => setName(e.target.value)}
+                                    />
+                                    {/* <p className="text-red-500 text-xs italic">Please fill out this field.</p> */}
+                                </div>
+                                <div className="w-full  px-3 mb-6 md:mb-0">
+                                    <label
+                                        className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                                        htmlFor=""
+                                    >
+                                        Email
+                                    </label>
+                                    <input
+                                        className="appearance-none block w-full bg-gray-200 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                                        id="grid-first-name"
+                                        type="text"
+                                        placeholder="example@gmail.com"
+                                        onChange={(e) => setEmail(e.target.value)}
+                                    />
+                                    {/* <p className="text-red-500 text-xs italic">Please fill out this field.</p> */}
+                                </div>
 
-                                        <div className="mt-2">
-                                            <p className="text-sm text-gray-500">Select role user.</p>
-                                         
+                            </div>
+                            <div className="flex flex-wrap -mx-3 mb-6">
+                                <div className="w-full px-3">
+                                    <label
+                                        className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                                        htmlFor="grid-password"
+                                    >
+                                        Password
+                                    </label>
+                                    <input
+                                        disabled
+                                        className=" appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                        id="grid-password"
+                                        type="password"
+                                        placeholder="******************"
+                                    />
+                                    <p className="text-gray-600 text-xs italic">
+                                        Password will auto rang
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="flex flex-wrap -mx-3 mb-2">
+                                <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                                    <label
+                                        className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                                        htmlFor="grid-state"
+                                    >
+                                        Status
+                                    </label>
+                                    <div className="relative">
+
+                                        <select
+                                            className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                            id="grid-state"
+                                        >
+                                            <option>Opening</option>
+                                            <option>Cloesing</option>
+                                        </select>
+                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                            <svg
+                                                className="fill-current h-4 w-4"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 20 20"
+                                            >
+                                                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                                    <label
+                                        className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                                        htmlFor="grid-state"
+                                    >
+                                        Role
+                                    </label>
+                                    {roles.length > 0 && (
+                                        <div className="relative">
                                             <select
-                                                value={idRole || ""}
-                                                onChange={handleRoleSelection}
-                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                                id="grid-state"
                                             >
                                                 <option value="" disabled>Select Role</option>
                                                 {roles.map((item) => (
@@ -207,30 +212,44 @@ function ModalUser() {
                                                     </option>
                                                 ))}
                                             </select>
+
+                                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                                <svg
+                                                    className="fill-current h-4 w-4"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 20 20"
+                                                >
+                                                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                                </svg>
+                                            </div>
                                         </div>
+                                    )}
+                                </div>
+                                <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                                    <label
+                                        className="block uppercase tracking-wide text-gray-700 text-xs font-bold mt-3 mb-2"
+                                        htmlFor="grid-state"
+                                    >
+                                    </label>
+                                    <div className="relative mb-2">
+                                        <LoadingButton
+                                            color="secondary"
+                                            onClick={submitAddUser}
+                                            loading={loading}
+                                            loadingPosition="start"
+                                            startIcon={<SaveIcon />}
+                                            variant="outlined"
+                                        >
+                                            <span>Save</span>
+                                        </LoadingButton>
+
                                     </div>
                                 </div>
                             </div>
-                            <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                <button
-                                    onClick={subscribeToNewUser}
-                                    type="button"
-                                    className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
-                                >
-                                    Save
-                                </button>
-                                <button
-                                    onClick={() => setShowModal(false)}
-                                    type="button"
-                                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                                >
-                                    Cancel
-                                </button>
-                            </div>
                         </div>
-                    </div>
-                </div>
-            </div>
+                    </Typography>
+                </Box>
+            </Modal>
         </div>
     )
 }

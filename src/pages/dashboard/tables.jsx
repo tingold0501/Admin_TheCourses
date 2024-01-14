@@ -10,15 +10,15 @@ import {
   Progress,
   input,
 } from "@material-tailwind/react";
-import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
-import { authorsTableData, projectsTableData } from "@/data";
-import ModalUser from "@/component/ModalUser";
+
 import { useEffect, useState } from "react";
 import ModalRole from "@/component/ModalRole";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ModalUser from "@/component/ModalUser";
+
 
 export function Tables() {
   <ToastContainer
@@ -35,7 +35,7 @@ export function Tables() {
   />
   {/* Same as */ }
   <ToastContainer />
-  const urlApi = 'http://127.0.0.1:8000/api/';
+  const urlApi = 'http://localhost/api/';
   const [isEditUser, setIsEditUser] = useState(false);
   const [editingUserId, setEditingUserId] = useState(null);
   const [roles, setRoles] = useState([]);
@@ -43,7 +43,7 @@ export function Tables() {
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [idRole, setIdRole] = useState(0);
-  const [status,setStatus] = useState(true);
+  const [status, setStatus] = useState(true);
   const [rowIdRoles, setRowIdRoles] = useState({});
   const [initialUserData, setInitialUserData] = useState(null);
 
@@ -178,7 +178,7 @@ export function Tables() {
     setEditingUserId(null);
     console.log("Edit" + isEditUser);
 
-      // Kiểm tra xem email, name, idRole, status có thay đổi không
+    // Kiểm tra xem email, name, idRole, status có thay đổi không
     const hasNameChanged = initialUserData.name !== userName;
     const hasEmailChanged = initialUserData.email !== userEmail;
     const hasIdRoleChanged = initialUserData.idRole !== idRole;
@@ -203,11 +203,11 @@ export function Tables() {
     //   console.log(status);
     // }
     console.log({
-          userName,
-          userEmail,
-          idRole,
-          status,
-        });
+      userName,
+      userEmail,
+      idRole,
+      status,
+    });
 
     // axios({
     //   method: 'post',
@@ -266,17 +266,17 @@ export function Tables() {
     // })
   }
 
-  useEffect(() => {
-    fetch(urlApi + "getDataRole")
-      .then((res) => res.json())
-      .then((res) => {
-        setRoles(res);
-        console.log(res);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetch(urlApi + "getDataRole")
+  //     .then((res) => res.json())
+  //     .then((res) => {
+  //       setRoles(res);
+  //       console.log(res);
+  //     });
+  // }, []);
 
   useEffect(() => {
-    fetch(urlApi + "getData")
+    fetch(urlApi + "getDataUser")
       .then((res) => res.json())
       .then((res) => {
         setUsers(res);
@@ -394,6 +394,21 @@ export function Tables() {
             Users Table
           </Typography>
           <ModalUser />
+          {/* <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={style}>
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                Text in a modal
+              </Typography>
+              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+              </Typography>
+            </Box>
+          </Modal> */}
           {/* <Button className="bg-white text-black">Add User</Button> */}
         </CardHeader>
         <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
@@ -538,7 +553,7 @@ export function Tables() {
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             defaultValue={initialUserData.status}
                           >
-                          
+
                             <option value={1}>Opening</option>
                             <option value={0}>Closing</option>
                           </select>
