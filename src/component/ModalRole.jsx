@@ -18,7 +18,7 @@ function ModalRole() {
     />
     {/* Same as */ }
     <ToastContainer />
-    const urlApi = 'http://127.0.0.1:8000/api/';
+    const urlApi = 'http://localhost/api/';
     const [showModal, setShowModal] = useState(false);
     const [roleName, setNameRole] = useState('');
 

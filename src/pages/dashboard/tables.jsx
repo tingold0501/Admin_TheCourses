@@ -266,19 +266,21 @@ export function Tables() {
     // })
   }
 
-  // useEffect(() => {
-  //   fetch(urlApi + "getDataRole")
-  //     .then((res) => res.json())
-  //     .then((res) => {
-  //       setRoles(res);
-  //       console.log(res);
-  //     });
-  // }, []);
+  useEffect(() => {
+    fetch(urlApi + "getDataRole")
+      .then((res) => res.json())
+      .then((res) => {
+        setRoles(res);
+        console.log(res);
+      });
+  }, []);
 
   useEffect(() => {
     fetch(urlApi + "getDataUser")
       .then((res) => res.json())
       .then((res) => {
+        // let currentDate = moment().format('MMMM Do YYYY, h:mm:ss a');
+        // res.data.created_at = currentDate;
         setUsers(res);
         console.log(res);
       });
@@ -297,7 +299,7 @@ export function Tables() {
           <table className="w-full min-w-[640px] table-auto">
             <thead>
               <tr>
-                {["role name", "created at", "status", "updated at", "", ""].map((el) => (
+                {["role name",  "status", "created at","updated at", "", ""].map((el) => (
                   <th
                     key={el}
                     className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -339,14 +341,7 @@ export function Tables() {
                           </div>
                         </div>
                       </td>
-                      <td className={className}>
-                        <Typography className="text-xs font-semibold text-blue-gray-600">
-                          {itemRole.created_at}
-                        </Typography>
-                        {/* <Typography className="text-xs font-normal text-blue-gray-500">
-                          {job[1]}
-                        </Typography> */}
-                      </td>
+                      
                       <td className={className}>
                         <Chip
                           variant="gradient"
@@ -354,6 +349,14 @@ export function Tables() {
                           value={itemRole.status ? "Opening" : "Closing"}
                           className="py-0.5 px-2 text-[11px] font-medium w-fit"
                         />
+                      </td>
+                      <td className={className}>
+                        <Typography className="text-xs font-semibold text-blue-gray-600">
+                          {itemRole.created_at}
+                        </Typography>
+                        {/* <Typography className="text-xs font-normal text-blue-gray-500">
+                          {job[1]}
+                        </Typography> */}
                       </td>
                       <td className={className}>
                         <Typography className="text-xs font-semibold text-blue-gray-600">
