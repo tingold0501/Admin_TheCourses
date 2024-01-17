@@ -10,7 +10,7 @@ import {
   Progress,
   input,
 } from "@material-tailwind/react";
-
+import { format } from 'date-fns';
 import { useEffect, useState } from "react";
 import ModalRole from "@/component/ModalRole";
 import Swal from "sweetalert2";
@@ -18,6 +18,7 @@ import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ModalUser from "@/component/ModalUser";
+import moment from "moment";
 
 
 export function Tables() {
@@ -352,7 +353,7 @@ export function Tables() {
                       </td>
                       <td className={className}>
                         <Typography className="text-xs font-semibold text-blue-gray-600">
-                          {itemRole.created_at}
+                          {moment(itemRole.created_at).format("MMM Do YY , h:mm:ss a")}
                         </Typography>
                         {/* <Typography className="text-xs font-normal text-blue-gray-500">
                           {job[1]}
@@ -360,7 +361,7 @@ export function Tables() {
                       </td>
                       <td className={className}>
                         <Typography className="text-xs font-semibold text-blue-gray-600">
-                          {itemRole.updated_at}
+                          {moment(itemRole.updated_at).format("MMM Do YY , h:mm:ss a")}
                         </Typography>
                       </td>
                       <td className={className}>
