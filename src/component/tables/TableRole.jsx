@@ -39,7 +39,7 @@ function TableRole() {
     const deleteRole = (id, name) => {
         Swal.fire({
             title: "Bạn Chắc Chắn?",
-            text: "Bạn Muốn Xoá Role  " + "[ " + name + " ]" ,
+            text: "Bạn Muốn Xoá Role  " + "[ " + name + " ]",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
@@ -167,17 +167,17 @@ function TableRole() {
 
     const editStatus = (id, status, name) => {
         console.log(id, status);
-        if(status == 0)
-        status = 1;
+        if (status == 0)
+            status = 1;
         else if (status == 1)
-        status = 0;
+            status = 0;
         Swal.fire({
             title: "Bạn Muốn Thay Đổi Trạng Thái Của [ " + name + "]",
             showDenyButton: true,
             showCancelButton: true,
             confirmButtonText: "Đúng",
             denyButtonText: `Không! Tôi Nhầm`
-          }).then((result) => {
+        }).then((result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
                 console.log(status);
@@ -188,8 +188,8 @@ function TableRole() {
                         id: id,
                         status: status
                     }
-                }).then((res) =>{
-                    if(res.data.check == true){
+                }).then((res) => {
+                    if (res.data.check == true) {
                         Swal.fire("Lưu Thành Công!", "", "success");
                     }
                     setTimeout(() => {
@@ -197,10 +197,10 @@ function TableRole() {
                     }, 1000);
                 })
             } else if (result.isDenied) {
-              Swal.fire("Không Có Thay Đổi Nào Được Diễn Ra", "", "info");
+                Swal.fire("Không Có Thay Đổi Nào Được Diễn Ra", "", "info");
             }
-          });
-        
+        });
+
     }
     useEffect(() => {
         fetch(urlApi + "getDataRole")
@@ -309,6 +309,9 @@ function TableRole() {
                                                             onClick={(e) => eidtRole(itemRole.id, itemRole.name, itemRole.status)}
                                                             as="a"
                                                             href="#"
+                                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                                            data-bs-custom-class="custom-tooltip"
+                                                            data-bs-title="This top tooltip is themed via CSS variables."
                                                             className="text-xs font-semibold text-blue-gray-600"
                                                         >
                                                             Edit Name
