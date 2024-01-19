@@ -103,7 +103,7 @@ function ModalUser() {
         }
     }
     useEffect(() => {
-        fetch(urlAPI + "getDataRole")
+        fetch(urlAPI + "getActiveRole")
             .then((res) => res.json())
             .then((res) => {
                 setRoles(res);
