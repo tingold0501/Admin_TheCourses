@@ -270,7 +270,8 @@ function TableRole() {
                                                                 </Typography>
                                                             </div>
                                                         )
-                                                    }
+                                                    }   
+                                                    
                                                 </div>
                                             </td>
 
@@ -316,12 +317,8 @@ function TableRole() {
                                                         >
                                                             Edit Name
                                                         </Typography>
-
-
                                                     )
                                                 }
-
-
                                             </td>
                                             <td className={className}>
                                                 <Typography
