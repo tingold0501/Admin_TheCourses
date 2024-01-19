@@ -20,12 +20,8 @@ function TableRole() {
     const [roles, setRoles] = useState([]);
     const [isEdit, setEdit] = useState(false);
     const [idEditRow, setIdEditRow] = useState(null);
+    const [nameRole, setNameRole] = useState('');
 
-    const [isDropdownOpen, setDropdownOpen] = useState(false);
-
-    const handleToggleDropdown = () => {
-        setDropdownOpen(!isDropdownOpen);
-    };
     <ToastContainer
         position="top-right"
         autoClose={1000}
@@ -43,7 +39,7 @@ function TableRole() {
     const deleteRole = (id, name) => {
         Swal.fire({
             title: "Bạn Chắc Chắn?",
-            text: "Bạn Muốn Xoá Role  " + "[ " + name + " ]" + id,
+            text: "Bạn Muốn Xoá Role  " + "[ " + name + " ]" ,
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
@@ -88,11 +84,124 @@ function TableRole() {
         setIdEditRow(id);
         setEdit(true);
         console.log(id, name, status, isEdit);
+
+
+    }
+    const exitEditMode = (id, name) => {
+        setEdit(false);
+        var oldName = name;
+        console.log(oldName, nameRole);
+        if (oldName == nameRole) {
+            toast.warning('🦄 ' + name + ' Chưa Được Thay Đổi!', {
+                position: "top-right",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
+        else if (nameRole == "") {
+            toast.warning('🦄 Tên Role Không Được Rỗng!', {
+                position: "top-right",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
+        else {
+            Swal.fire({
+                title: "Bạn Chắc Chắn?",
+                text: "Bạn Muốn Thay Đổi  " + "[ " + name + " ] " + "Thành : [ " + nameRole + " ]",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Có!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios({
+                        method: 'post',
+                        url: urlApi + 'updateRoleName',
+                        data: {
+                            id: id,
+                            nameRole: nameRole
+                        }
+                    }).then((res) => {
+                        if (res.data.check == true) {
+                            Swal.fire({
+                                title: "Thay Đổi Thành Công!",
+                                text: "Đã Thay Đổi Thành Công.",
+                                icon: "success"
+                            });
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000);
+
+                        }
+                        else if (res.data.check == false) {
+                            console.log(res.data.msg);
+                            toast.warning('🦄' + res.data.msg, {
+                                position: "top-right",
+                                autoClose: 1000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                                theme: "light",
+                            });
+                        }
+                    })
+                }
+            })
+
+        }
+    };
+
+    const editStatus = (id, status, name) => {
+        console.log(id, status);
+        if(status == 0)
+        status = 1;
+        else if (status == 1)
+        status = 0;
+        Swal.fire({
+            title: "Bạn Muốn Thay Đổi Trạng Thái Của [ " + name + "]",
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Đúng",
+            denyButtonText: `Không! Tôi Nhầm`
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                console.log(status);
+                axios({
+                    method: 'post',
+                    url: urlApi + 'updateStatus',
+                    data: {
+                        id: id,
+                        status: status
+                    }
+                }).then((res) =>{
+                    if(res.data.check == true){
+                        Swal.fire("Lưu Thành Công!", "", "success");
+                    }
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                })
+            } else if (result.isDenied) {
+              Swal.fire("Không Có Thay Đổi Nào Được Diễn Ra", "", "info");
+            }
+          });
         
     }
-    const exitEditMode = () => {
-        setEdit(false);
-    };
     useEffect(() => {
         fetch(urlApi + "getDataRole")
             .then((res) => res.json())
@@ -103,6 +212,7 @@ function TableRole() {
     }, []);
     return (
         <div>
+            <ToastContainer />
             <Card>
                 <CardHeader variant="gradient" color="gray" className="mb-8 p-6 flex items-center justify-between">
                     <Typography variant="h6" color="white">
@@ -145,6 +255,7 @@ function TableRole() {
                                                         idEditRow === itemRole.id && isEdit ? (
                                                             <div className="relative h-10 w-full min-w-[200px]">
                                                                 <input
+                                                                    onChange={(e) => setNameRole(e.target.value)}
                                                                     className="peer h-full w-full rounded-[7px] border border-green-500 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-green-500 placeholder-shown:border-t-green-500 focus:border-2 focus:border-green-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                                                                     placeholder=" "
                                                                 />
@@ -166,9 +277,10 @@ function TableRole() {
                                             <td className={className}>
                                                 <Chip
                                                     variant="gradient"
-                                                    color={itemRole.status ? "green" : "blue-gray"}
+                                                    onClick={(e) => editStatus(itemRole.id, itemRole.status, itemRole.name)}
+                                                    color={itemRole.status ? "green" : "red"}
                                                     value={itemRole.status ? "Opening" : "Closing"}
-                                                    className="py-0.5 px-2 text-[11px] font-medium w-fit"
+                                                    className="py-0.5 px-2 text-[11px] font-medium w-fit cursor-pointer"
                                                 />
                                             </td>
                                             <td className={className}>
@@ -185,7 +297,7 @@ function TableRole() {
                                                 {
                                                     idEditRow == itemRole.id && isEdit ? (
                                                         <Typography
-                                                            onClick={(e) => exitEditMode()}
+                                                            onClick={(e) => exitEditMode(itemRole.id, itemRole.name)}
                                                             as="a"
                                                             href="#"
                                                             className="text-xs font-semibold text-blue-gray-600"
@@ -201,7 +313,7 @@ function TableRole() {
                                                         >
                                                             Edit Name
                                                         </Typography>
-                                                       
+
 
                                                     )
                                                 }

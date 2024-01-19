@@ -46,7 +46,8 @@ function ModalUser() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
 
-    const submitAddUser = () => {
+    const submitAddUser = (role) => {
+        console.log(role);
         if (name == '') {
             toast.error('🦄 Full Name User is Null!', {
                 position: "top-right",
@@ -79,6 +80,8 @@ function ModalUser() {
                 data: {
                     name: name,
                     email: email,
+                    status: 1,
+                    role:role
                 }
             }).then((res) => {
                 console.log(res);
@@ -181,7 +184,7 @@ function ModalUser() {
                                             <option>Opening</option>
                                             <option>Cloesing</option>
                                         </select>
-                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                        {/* <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                                             <svg
                                                 className="fill-current h-4 w-4"
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -189,7 +192,7 @@ function ModalUser() {
                                             >
                                                 <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
                                             </svg>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                                 <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
@@ -234,7 +237,7 @@ function ModalUser() {
                                     <div className="relative mb-2">
                                         <LoadingButton
                                             color="secondary"
-                                            onClick={submitAddUser}
+                                            onClick={submitAddUser(roles.name)}
                                             loading={loading}
                                             loadingPosition="start"
                                             startIcon={<SaveIcon />}
