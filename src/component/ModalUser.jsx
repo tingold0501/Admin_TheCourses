@@ -9,6 +9,7 @@ import Modal from '@mui/material/Modal';
 import { Box } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SaveIcon from '@mui/icons-material/Save';
+import { setId } from '@material-tailwind/react/components/Tabs/TabsContext';
 function ModalUser() {
     <ToastContainer
         position="top-right"
@@ -45,11 +46,25 @@ function ModalUser() {
     const [roles, setRoles] = useState([]);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
+    const [idRole, setIdRole] = useState(0);
 
-    const submitAddUser = (role) => {
-        console.log(role);
+    const submitAddUser = () => {
+        console.log(idRole);
         if (name == '') {
             toast.error('🦄 Full Name User is Null!', {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
+        else if(phone == ''){
+            toast.error('🦄 Phone User is Null!', {
                 position: "top-right",
                 autoClose: 2000,
                 hideProgressBar: false,
@@ -73,15 +88,14 @@ function ModalUser() {
             });
         }
         else {
-            setLoading(true);
             axios({
                 method: 'post',
                 url: urlAPI + 'addNewUser',
                 data: {
                     name: name,
                     email: email,
-                    status: 1,
-                    role: role
+                    phone:phone,
+                    idRole: idRole
                 }
             }).then((res) => {
                 console.log(res);
@@ -137,6 +151,7 @@ function ModalUser() {
                                             @
                                         </span>
                                         <input
+                                        onChange={(e) => setName(e.target.value)}
                                             type="text"
                                             className="form-control"
                                             placeholder="Nguyen Van A"
@@ -150,6 +165,7 @@ function ModalUser() {
                                             #
                                         </span>
                                         <input
+                                            onChange={(e) => setPhone(e.target.value)}
                                             type="text"
                                             className="form-control"
                                             placeholder="09127561226"
@@ -160,6 +176,7 @@ function ModalUser() {
                                     </div>
                                     <div className="input-group mb-3">
                                         <input
+                                            onChange={(e) => setEmail(e.target.value)}
                                             type="text"
                                             className="form-control"
                                             placeholder="NguyenVanA0101@gmail.com"
@@ -171,9 +188,9 @@ function ModalUser() {
                                         </span>
                                     </div>
                                     <div className="input-group mb-3">
-                                        <select className='form-control'>
+                                        <select onChange={(e) => setIdRole(e.target.value)} className='form-control'>
                                             {roles.map((item) => (
-                                                <option key={item.id} value={item.id}>
+                                                <option o key={item.id} value={item.id}>
                                                     {item.name}
                                                 </option>
                                             ))}
@@ -190,7 +207,7 @@ function ModalUser() {
                                 >
                                     Close
                                 </button>
-                                <button type="button" className="btn btn-primary text-black">
+                                <button onClick={(e) => submitAddUser()} type="button" className="btn btn-primary text-black">
                                     Save changes
                                 </button>
                             </div>
