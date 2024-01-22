@@ -37,6 +37,7 @@ function TableRole() {
     {/* Same as */ }
     <ToastContainer />
     const deleteRole = (id, name) => {
+
         Swal.fire({
             title: "Bạn Chắc Chắn?",
             text: "Bạn Muốn Xoá Role  " + "[ " + name + " ]",
@@ -47,6 +48,7 @@ function TableRole() {
             confirmButtonText: "Có!"
         }).then((result) => {
             if (result.isConfirmed) {
+
                 axios({
                     method: 'post',
                     url: urlApi + 'deleteRole',
@@ -63,6 +65,14 @@ function TableRole() {
                         window.location.reload();
                     }
                     else if (res.data.check == false) {
+                        Swal.fire({
+                            icon: "warning",
+                            title: "Thông Báo Quan Trọng,",
+                            html: `
+                                Bạn Không thể xoá Role <b>${name}</b>,
+                            `,
+                            footer: '<a href="/detailrole">Tìm Hiểu Thêm</a>'
+                        });
                         toast.error('🦄' + res.data.msg, {
                             position: "top-right",
                             autoClose: 1000,
@@ -270,8 +280,8 @@ function TableRole() {
                                                                 </Typography>
                                                             </div>
                                                         )
-                                                    }   
-                                                    
+                                                    }
+
                                                 </div>
                                             </td>
 

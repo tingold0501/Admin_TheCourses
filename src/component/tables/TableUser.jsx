@@ -30,14 +30,19 @@ function TableUser() {
     />
     {/* Same as */ }
     <ToastContainer />
+    const [isEditUser, setIsEditUser] = useState(false);
+    const [editingUserId, setEditingUserId] = useState(null);
+    const [roles, setRoles] = useState([]);
+    const [idRole, setIdRole] = useState(0);
+    const [initialUserData, setInitialUserData] = useState(null);
     useEffect(() => {
         fetch(urlApi + "getDataUser")
-          .then((res) => res.json())
-          .then((res) => {
-            setUsers(res);
-            console.log(res);
-          });
-      }, []);
+            .then((res) => res.json())
+            .then((res) => {
+                setUsers(res);
+                console.log(res);
+            });
+    }, []);
     return (
         <div>
             <Card>
@@ -50,9 +55,9 @@ function TableUser() {
                 </CardHeader>
                 <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
                     <table className="w-full min-w-[640px] table-auto">
-                        <thead>
+                        <thead className=''>
                             <tr>
-                                {[" name", "email", "role name", "created at", "status", "updated at", "", ""].map((el) => (
+                                {[" name", "status", "role name", "created at", "updated at", "", ""].map((el) => (
                                     <th
                                         key={el}
                                         className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -70,26 +75,29 @@ function TableUser() {
                         <tbody>
                             {users.map(
                                 (itemUsers, key) => {
-                                    const className = `py-3 px-5 ${key === roles.length - 1
+                                    const className = `py-3 px-5  ${key === roles.length - 1
                                         ? ""
                                         : "border-b border-blue-gray-50"
                                         }`;
 
                                     return (
                                         <tr key={itemUsers.name}>
-                                            {isEditUser && editingUserId === itemUsers.id && initialUserData ? (
-                                                <input
-                                                    className="w-full mt-5 ml-4"
-                                                    type="text"
-                                                    placeholder={itemUsers.name}
-                                                    // Sử dụng giá trị hiện tại
-                                                    // Cập nhật giá trị khi người dùng thay đổi
-                                                    onChange={(e) => setUserName(e.target.value, 'name')}
-                                                />
-                                            ) : (
-                                                <td className={className}>
-                                                    <div className="flex items-center gap-4">
-                                                        {/* <Avatar src={img} alt={name} size="sm" variant="rounded" /> */}
+
+                                            <td className={className}>
+                                                <div className="flex items-center gap-4">
+                                                    {/* <Avatar src={img} alt={name} size="sm" variant="rounded" /> */}
+                                                    {isEditUser && editingUserId === itemUsers.id && initialUserData ? (
+                                                        <div className="relative h-10 w-full min-w-[200px]">
+                                                        <input
+                                                            onChange={(e) => setNameRole(e.target.value)}
+                                                            className="peer h-full w-full rounded-[7px] border border-green-500 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-green-500 placeholder-shown:border-t-green-500 focus:border-2 focus:border-green-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
+                                                            placeholder=" "
+                                                        />
+                                                        <label className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-green-500 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-green-500 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-green-500 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-green-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:border-green-500 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
+                                                            {itemRole.name}
+                                                        </label>
+                                                    </div>
+                                                    ) : (
                                                         <div>
                                                             <Typography
                                                                 variant="small"
@@ -98,16 +106,19 @@ function TableUser() {
                                                             >
                                                                 {itemUsers.name}
                                                             </Typography>
-                                                            {/* <Typography className="text-xs font-normal text-blue-gray-500">
-                              {email}
-                            </Typography> */}
+                                                            <Typography className="text-xs font-normal text-blue-gray-500">
+                                                                {itemUsers.email}
+                                                            </Typography>
                                                         </div>
-                                                    </div>
-                                                </td>
+                                                    )}
 
-                                            )}
+                                                </div>
+                                            </td>
 
-                                            <td className={className}>
+                                            {/* <Avatar src={img} alt={name} size="sm" variant="rounded" /> */}
+
+
+                                            {/* <td className={className}>
                                                 {isEditUser && editingUserId == itemUsers.id ? (
                                                     <input
                                                         className="w-full "
@@ -119,7 +130,6 @@ function TableUser() {
                                                     />
                                                 ) : (
                                                     <div className="flex items-center gap-4">
-                                                        {/* <Avatar src={img} alt={name} size="sm" variant="rounded" /> */}
                                                         <div>
                                                             <Typography
                                                                 variant="small"
@@ -128,14 +138,22 @@ function TableUser() {
                                                             >
                                                                 {itemUsers.email}
                                                             </Typography>
-                                                            {/* <Typography className="text-xs font-normal text-blue-gray-500">
-                              {email}
-                            </Typography> */}
+                                                            
                                                         </div>
                                                     </div>
                                                 )}
 
+                                            </td> */}
+                                            <td className={className}>
+                                                <Chip
+                                                    variant="gradient"
+                                                    onClick={(e) => editStatus(itemRole.id, itemRole.status, itemRole.name)}
+                                                    color={itemUsers.status ? "green" : "red"}
+                                                    value={itemUsers.status ? "Opening" : "Closing"}
+                                                    className="py-0.5 px-2 text-[11px] font-medium w-fit cursor-pointer"
+                                                />
                                             </td>
+
                                             <td className={className}>
                                                 <div className="flex items-center gap-4">
                                                     {isEditUser && editingUserId === itemUsers.id && initialUserData ? (
@@ -178,35 +196,18 @@ function TableUser() {
 
                                             <td className={className}>
                                                 <Typography className="text-xs font-semibold text-blue-gray-600">
-                                                    {itemUsers.created_at}
+                                                    {moment(itemUsers.created_at).format("MMM Do YY , h:mm:ss a")}
+
                                                 </Typography>
                                                 {/* <Typography className="text-xs font-normal text-blue-gray-500">
                           {job[1]}
                         </Typography> */}
                                             </td>
-                                            <td className={className}>
-                                                {isEditUser && editingUserId === itemUsers.id && initialUserData ? (
-                                                    <select
-                                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                                        defaultValue={initialUserData.status}
-                                                    >
 
-                                                        <option value={1}>Opening</option>
-                                                        <option value={0}>Closing</option>
-                                                    </select>
-                                                ) : (
-                                                    <Chip
-                                                        variant="gradient"
-                                                        color={itemUsers.status ? "green" : "blue-gray"}
-                                                        value={itemUsers.status ? "Opening" : "Closing"}
-                                                        className="py-0.5 px-2 text-[11px] font-medium w-fit"
-                                                    />
-                                                )}
-
-                                            </td>
                                             <td className={className}>
                                                 <Typography className="text-xs font-semibold text-blue-gray-600">
-                                                    {itemUsers.updated_at}
+                                                    {moment(itemUsers.updated_at).format("MMM Do YY , h:mm:ss a")}
+
                                                 </Typography>
                                             </td>
                                             <td className={className}>

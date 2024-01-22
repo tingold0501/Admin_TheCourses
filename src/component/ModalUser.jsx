@@ -50,7 +50,6 @@ function ModalUser() {
     const [idRole, setIdRole] = useState(0);
 
     const submitAddUser = () => {
-        console.log(idRole);
         if (name == '') {
             toast.error('🦄 Full Name User is Null!', {
                 position: "top-right",
@@ -98,7 +97,61 @@ function ModalUser() {
                     idRole: idRole
                 }
             }).then((res) => {
-                console.log(res);
+                console.log(name,email,phone,idRole);
+                if(res.data.check == true){
+                    toast.success('🦄' + res.data.msg, {
+                        position: "top-right",
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                    });
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                }
+                else if(res.data.check == false){
+                    if(res.data.msg.name){
+                        toast.error('🦄' + res.data.msg.name, {
+                            position: "top-right",
+                            autoClose: 2000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                        });
+                    }
+                    if(res.data.msg.phone){
+                        toast.error('🦄' + res.data.msg.phone, {
+                            position: "top-right",
+                            autoClose: 2000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                        });
+                    }
+                    else if(res.data.msg.email){
+                        toast.error('🦄' + res.data.msg.email, {
+                            position: "top-right",
+                            autoClose: 2000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                        });
+                    }
+                }
+                
             })
         }
     }
@@ -190,7 +243,7 @@ function ModalUser() {
                                     <div className="input-group mb-3">
                                         <select onChange={(e) => setIdRole(e.target.value)} className='form-control'>
                                             {roles.map((item) => (
-                                                <option o key={item.id} value={item.id}>
+                                                <option key={item.id} value={item.id}>
                                                     {item.name}
                                                 </option>
                                             ))}
