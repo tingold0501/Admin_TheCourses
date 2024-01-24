@@ -3,13 +3,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from "react";
 import axios from 'axios';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
-import { Box } from '@mui/material';
-import LoadingButton from '@mui/lab/LoadingButton';
-import SaveIcon from '@mui/icons-material/Save';
-import { setId } from '@material-tailwind/react/components/Tabs/TabsContext';
+
 function ModalUser() {
     <ToastContainer
         position="top-right"
@@ -47,8 +41,8 @@ function ModalUser() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
-    const [idRole, setIdRole] = useState(0);
-
+    const [idRole, setRoleId] = useState(0);
+   
     const submitAddUser = () => {
         if (name == '') {
             toast.error('🦄 Full Name User is Null!', {
@@ -150,6 +144,19 @@ function ModalUser() {
                             theme: "light",
                         });
                     }
+                    else if(res.data.msg.idRole){
+                        toast.error('🦄' + res.data.msg.idRole, {
+                            position: "top-right",
+                            autoClose: 2000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                        });
+                    }
+                    
                 }
                 
             })
@@ -241,7 +248,7 @@ function ModalUser() {
                                         </span>
                                     </div>
                                     <div className="input-group mb-3">
-                                        <select onChange={(e) => setIdRole(e.target.value)} className='form-control'>
+                                        <select onChange={(e) => setRoleId(e.target.value)} value={idRole} className='form-control'>
                                             {roles.map((item) => (
                                                 <option key={item.id} value={item.id}>
                                                     {item.name}
