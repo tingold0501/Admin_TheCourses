@@ -20,10 +20,10 @@ function ModalRole() {
     <ToastContainer />
     const urlApi = 'http://localhost/api/';
     const [showModal, setShowModal] = useState(false);
-    const [roleName, setNameRole] = useState('');
+    const [name, setNameRole] = useState('');
 
     const subscribeToNewRole = () =>{
-        if(roleName == ''){
+        if(name == ''){
             toast.error('🦄 Name Role is null!', {
                 position: "top-right",
                 autoClose: 1000,
@@ -38,9 +38,9 @@ function ModalRole() {
         else{
             axios({
                 method: 'post',
-                url: urlApi + 'addRole',
+                url: urlApi + 'addARole',
                 data: {
-                    roleName:roleName
+                    name:name
                 }
             }).then((res)=>{
                 if(res.data.check == true){
@@ -121,7 +121,7 @@ function ModalRole() {
                                             <p className="text-sm text-gray-500">Enter Name Role.</p>
                                             <input
                                                 type="text"
-                                                value={roleName}
+                                                value={name}
                                                 onChange={(e) =>setNameRole(e.target.value)}
                                                 className="mt-2 p-2 border text-black border-gray-300 rounded-md w-full focus:outline-none focus:ring focus:border-blue-500"
                                                 placeholder="Admin"

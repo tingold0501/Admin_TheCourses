@@ -20,7 +20,8 @@ function TableRole() {
     const [roles, setRoles] = useState([]);
     const [isEdit, setEdit] = useState(false);
     const [idEditRow, setIdEditRow] = useState(null);
-    const [nameRole, setNameRole] = useState('');
+    const [name, setNameRole] = useState('');
+    const [newName, setNewName] = useState('');
 
     <ToastContainer
         position="top-right"
@@ -94,14 +95,12 @@ function TableRole() {
         setIdEditRow(id);
         setEdit(true);
         console.log(id, name, status, isEdit);
-
-
     }
     const exitEditMode = (id, name) => {
         setEdit(false);
-        var oldName = name;
-        console.log(oldName, nameRole);
-        if (oldName == nameRole) {
+        // var oldName = name;
+        // console.log(oldName, name);
+        if (name == newName) {
             toast.warning('🦄 ' + name + ' Chưa Được Thay Đổi!', {
                 position: "top-right",
                 autoClose: 1000,
@@ -113,7 +112,7 @@ function TableRole() {
                 theme: "light",
             });
         }
-        else if (nameRole == "") {
+        else if (name == "") {
             toast.warning('🦄 Tên Role Không Được Rỗng!', {
                 position: "top-right",
                 autoClose: 1000,
@@ -128,7 +127,7 @@ function TableRole() {
         else {
             Swal.fire({
                 title: "Bạn Chắc Chắn?",
-                text: "Bạn Muốn Thay Đổi  " + "[ " + name + " ] " + "Thành : [ " + nameRole + " ]",
+                text: "Bạn Muốn Thay Đổi  " + "[ " + name + " ] " + "Thành : [ " + newName + " ]",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
@@ -138,10 +137,10 @@ function TableRole() {
                 if (result.isConfirmed) {
                     axios({
                         method: 'post',
-                        url: urlApi + 'updateRoleName',
+                        url: urlApi + 'updateNameRole',
                         data: {
                             id: id,
-                            nameRole: nameRole
+                            name: newName
                         }
                     }).then((res) => {
                         if (res.data.check == true) {
@@ -193,7 +192,7 @@ function TableRole() {
                 console.log(status);
                 axios({
                     method: 'post',
-                    url: urlApi + 'updateStatus',
+                    url: urlApi + 'updateStatusRole',
                     data: {
                         id: id,
                         status: status
@@ -213,7 +212,7 @@ function TableRole() {
 
     }
     useEffect(() => {
-        fetch(urlApi + "getDataRole")
+        fetch(urlApi + "getAllDataRole")
             .then((res) => res.json())
             .then((res) => {
                 setRoles(res);
@@ -265,7 +264,7 @@ function TableRole() {
                                                         idEditRow === itemRole.id && isEdit ? (
                                                             <div className="relative h-10 w-full min-w-[200px]">
                                                                 <input
-                                                                    onChange={(e) => setNameRole(e.target.value)}
+                                                                    onChange={(e) => setNewName(e.target.value)}
                                                                     className="peer h-full w-full rounded-[7px] border border-green-500 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-green-500 placeholder-shown:border-t-green-500 focus:border-2 focus:border-green-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                                                                     placeholder=" "
                                                                 />
