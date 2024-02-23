@@ -83,7 +83,7 @@ function ModalUser() {
         else {
             axios({
                 method: 'post',
-                url: urlAPI + 'addNewUser',
+                url: urlAPI + 'addAUser',
                 data: {
                     name: name,
                     email: email,
@@ -163,7 +163,7 @@ function ModalUser() {
         }
     }
     useEffect(() => {
-        fetch(urlAPI + "getActiveRole")
+        fetch(urlAPI + "getActive")
             .then((res) => res.json())
             .then((res) => {
                 setRoles(res);

@@ -3,6 +3,8 @@ import moment from "moment";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect, useState } from "react";
+import Swal from 'sweetalert2';
+import axios from 'axios';
 
 import {
     Card,
@@ -35,11 +37,58 @@ function TableUser() {
     const [roles, setRoles] = useState([]);
     const [idRole, setIdRole] = useState(0);
     const [initialUserData, setInitialUserData] = useState(null);
+
+    const editStatus = (id,status,name) =>{
+        console.log(id,status,name);
+        if(status == 0){
+            status = 1;
+        }
+        else if(status == 1){
+            status = 0;
+        }
+        Swal.fire({
+            title: "Bạn Muốn Thay Đổi Trạng Thái Của [ " + name + "]",
+            showDenyButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Đúng",
+            denyButtonText: `Không! Tôi Nhầm`
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                console.log(status);
+                axios({
+                    method: 'post',
+                    url: urlApi + 'updateStatusUser',
+                    data: {
+                        id: id,
+                        status: status
+                    }
+                }).then((res) => {
+                    if (res.data.check == true) {
+                        Swal.fire("Lưu Thành Công!", "", "success");
+                    }
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                })
+            } else if (result.isDenied) {
+                Swal.fire("Không Có Thay Đổi Nào Được Diễn Ra", "", "info");
+            }
+        });
+    }
     useEffect(() => {
-        fetch(urlApi + "getDataUser")
+        fetch(urlApi + "getAllDataUser")
             .then((res) => res.json())
             .then((res) => {
                 setUsers(res);
+                console.log(res);
+            });
+    }, []);
+    useEffect(() => {
+        fetch(urlApi + "getAllDataRole")
+            .then((res) => res.json())
+            .then((res) => {
+                setRoles(res);
                 console.log(res);
             });
     }, []);
@@ -147,7 +196,7 @@ function TableUser() {
                                             <td className={className}>
                                                 <Chip
                                                     variant="gradient"
-                                                    onClick={(e) => editStatus(itemRole.id, itemRole.status, itemRole.name)}
+                                                    onClick={(e) => editStatus(itemUsers.id, itemUsers.status, itemUsers.name)}
                                                     color={itemUsers.status ? "green" : "red"}
                                                     value={itemUsers.status ? "Opening" : "Closing"}
                                                     className="py-0.5 px-2 text-[11px] font-medium w-fit cursor-pointer"
@@ -158,7 +207,7 @@ function TableUser() {
                                                 <div className="flex items-center gap-4">
                                                     {isEditUser && editingUserId === itemUsers.id && initialUserData ? (
                                                         <select
-                                                            value={idRole || itemUsers.idRole}
+                                                            value={idRole || itemUsers.role_id}
                                                             onChange={handleRoleSelection}
                                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                         >
@@ -173,7 +222,7 @@ function TableUser() {
                                                         <div>
                                                             {roles.map((role) => {
                                                                 // Thêm điều kiện để chỉ hiển thị thông tin của vai trò của người dùng
-                                                                if (role.id === itemUsers.idRole) {
+                                                                if (role.id == itemUsers.role_id) {
                                                                     return (
                                                                         <div key={role.id}>
                                                                             <Typography
