@@ -32,11 +32,17 @@ function TableUser() {
     />
     {/* Same as */ }
     <ToastContainer />
-    const [isEditUser, setIsEditUser] = useState(false);
-    const [editingUserId, setEditingUserId] = useState(null);
+    const [isEditUserName, setEditUserName] = useState(false);
+    const [isEditUserEmail, setEditUserEmail] = useState(false);
+    const [isEditUserRole, setEditUserRole] = useState(false);
+    const [idEditRow, setIdEditRow] = useState(null);
     const [roles, setRoles] = useState([]);
     const [idRole, setIdRole] = useState(0);
-    const [initialUserData, setInitialUserData] = useState(null);
+    const [newName, setNewName] = useState('');
+    const [newEmail, setNewEmail] = useState('');
+    const [newRoleName, setNewRoleName] = useState('');
+
+    
 
     const editStatus = (id,status,name) =>{
         console.log(id,status,name);
@@ -76,6 +82,100 @@ function TableUser() {
             }
         });
     }
+
+    const editUserName = (id, name) => {
+        setIdEditRow(id);
+        setEditUserName(true);
+        console.log(id, name, isEditUserName);
+    }
+
+    const editUserEmail = (id, email) => {
+        setEditUserEmail(true);
+        setIdEditRow(id);
+        console.log(id, email);
+
+    }
+
+    const changeRole = (id,name) =>{
+        setEditUserRole(true);
+        setIdEditRow(id);
+        console.log(id,name,isEditUserRole);
+    }
+    const exitEditMode = (id, name) => {
+        setEditUserName(false);
+        if (name == newName) {
+            toast.warning('🦄 ' + name + ' Chưa Được Thay Đổi!', {
+                position: "top-right",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
+        else if (name == "") {
+            toast.warning('🦄 Tên Role Không Được Rỗng!', {
+                position: "top-right",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
+        else {
+            Swal.fire({
+                title: "Bạn Chắc Chắn?",
+                text: "Bạn Muốn Thay Đổi  " + "[ " + name + " ] " + "Thành : [ " + newName + " ]",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Có!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios({
+                        method: 'post',
+                        url: urlApi + 'updateNameUser',
+                        data: {
+                            id: id,
+                            name: newName
+                        }
+                    }).then((res) => {
+                        if (res.data.check == true) {
+                            Swal.fire({
+                                title: "Thay Đổi Thành Công!",
+                                text: "Đã Thay Đổi Thành Công.",
+                                icon: "success"
+                            });
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000);
+
+                        }
+                        else if (res.data.check == false) {
+                            console.log(res.data.msg);
+                            toast.warning('🦄' + res.data.msg, {
+                                position: "top-right",
+                                autoClose: 1000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                                theme: "light",
+                            });
+                        }
+                    })
+                }
+            })
+
+        }
+    };
     useEffect(() => {
         fetch(urlApi + "getAllDataUser")
             .then((res) => res.json())
@@ -85,7 +185,7 @@ function TableUser() {
             });
     }, []);
     useEffect(() => {
-        fetch(urlApi + "getAllDataRole")
+        fetch(urlApi + "getActive")
             .then((res) => res.json())
             .then((res) => {
                 setRoles(res);
@@ -131,19 +231,18 @@ function TableUser() {
 
                                     return (
                                         <tr key={itemUsers.name}>
-
                                             <td className={className}>
                                                 <div className="flex items-center gap-4">
                                                     {/* <Avatar src={img} alt={name} size="sm" variant="rounded" /> */}
-                                                    {isEditUser && editingUserId === itemUsers.id && initialUserData ? (
+                                                    { idEditRow === itemUsers.id && isEditUserName  ? (
                                                         <div className="relative h-10 w-full min-w-[200px]">
                                                         <input
-                                                            onChange={(e) => setNameRole(e.target.value)}
+                                                            onChange={(e) => setNewName(e.target.value)}
                                                             className="peer h-full w-full rounded-[7px] border border-green-500 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-green-500 placeholder-shown:border-t-green-500 focus:border-2 focus:border-green-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                                                             placeholder=" "
                                                         />
                                                         <label className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-green-500 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-green-500 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-green-500 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-green-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-green-500 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:border-green-500 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:border-green-500 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
-                                                            {itemRole.name}
+                                                            {itemUsers.name}
                                                         </label>
                                                     </div>
                                                     ) : (
@@ -155,12 +254,13 @@ function TableUser() {
                                                             >
                                                                 {itemUsers.name}
                                                             </Typography>
-                                                            <Typography className="text-xs font-normal text-blue-gray-500">
+                                                            <Typography className="text-xs cursor-pointer font-normal text-blue-gray-500"
+                                                                onClick = {(e) => editUserEmail(itemUsers.id, itemUsers.email)}
+                                                                >
                                                                 {itemUsers.email}
                                                             </Typography>
                                                         </div>
                                                     )}
-
                                                 </div>
                                             </td>
 
@@ -205,30 +305,32 @@ function TableUser() {
 
                                             <td className={className}>
                                                 <div className="flex items-center gap-4">
-                                                    {isEditUser && editingUserId === itemUsers.id && initialUserData ? (
+                                                    { idEditRow === itemUsers.id && isEditUserRole ?  (
                                                         <select
-                                                            value={idRole || itemUsers.role_id}
-                                                            onChange={handleRoleSelection}
-                                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                                        >
-                                                            <option value="" disabled>Select Role</option>
-                                                            {roles.map((item) => (
-                                                                <option key={item.id} value={item.id}>
-                                                                    {item.name}
-                                                                </option>
-                                                            ))}
-                                                        </select>
+                                                        value={idRole || itemUsers.role_id}
+                                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                        onChange={(e) => setIdRole(e.target.value)}
+                                                    >
+                                                        <option value="" disabled>Select Role</option>
+                                                        {roles.map((item) => (
+                                                            <option key={item.id} value={item.id}>
+                                                                {item.name}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                    
                                                     ) : (
                                                         <div>
                                                             {roles.map((role) => {
                                                                 // Thêm điều kiện để chỉ hiển thị thông tin của vai trò của người dùng
-                                                                if (role.id == itemUsers.role_id) {
+                                                                if (role.id == itemUsers.role_id ) {
                                                                     return (
                                                                         <div key={role.id}>
                                                                             <Typography
                                                                                 variant="small"
                                                                                 color="blue-gray"
-                                                                                className="font-semibold"
+                                                                                className="font-semibold cursor-pointer"
+                                                                                onClick={(e) => changeRole(role.id, role.name)}
                                                                             >
                                                                                 {role.name}
                                                                             </Typography>
@@ -260,9 +362,9 @@ function TableUser() {
                                                 </Typography>
                                             </td>
                                             <td className={className}>
-                                                {isEditUser && editingUserId === itemUsers.id ? (
+                                                {idEditRow === itemUsers.id && isEditUserName ?  (
                                                     <Typography
-                                                        onClick={(e) => saveEditUser()}
+                                                        onClick={(e) => exitEditMode(itemUsers.id, itemUsers.name)}
                                                         as="a"
                                                         href="#"
                                                         className="text-xs font-semibold text-blue-gray-600"
@@ -272,12 +374,12 @@ function TableUser() {
 
                                                 ) : (
                                                     <Typography
-                                                        onClick={(e) => editUser(itemUsers.id)}
+                                                        onClick={(e) => editUserName(itemUsers.id, itemUsers.name)}
                                                         as="a"
                                                         href="#"
                                                         className="text-xs font-semibold text-blue-gray-600"
                                                     >
-                                                        Edit
+                                                        Edit Name
                                                     </Typography>
 
                                                 )}

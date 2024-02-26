@@ -20,7 +20,6 @@ function TableRole() {
     const [roles, setRoles] = useState([]);
     const [isEdit, setEdit] = useState(false);
     const [idEditRow, setIdEditRow] = useState(null);
-    const [name, setNameRole] = useState('');
     const [newName, setNewName] = useState('');
 
     <ToastContainer
