@@ -4,9 +4,9 @@ import { SignIn } from "./pages/auth";
 import { DetailRole } from "./pages/details/DetailRole";
 
 function App() {
-  // if(!localStorage.getItem("token")){
-  //   return <SignIn/>
-  // }
+  if(!localStorage.getItem("token")){
+    return <SignIn/>
+  }
   return (
     <Routes>
       <Route path="/detailrole" element={<DetailRole />} />

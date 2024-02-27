@@ -175,6 +175,7 @@ function TableRole() {
 
     const editStatus = (id, status, name) => {
         console.log(id, status);
+
         if (status == 0)
             status = 1;
         else if (status == 1)
@@ -254,13 +255,13 @@ function TableRole() {
                                         ? ""
                                         : "border-b border-blue-gray-50"
                                         }`;
-
+                                    const active = `${itemRole.id <= 3 ? "disable-row":""}`;
                                     return (
-                                        <tr key={itemRole.name}>
-                                            <td className={className}>
-                                                <div className="flex items-center gap-4">
+                                        <tr key={itemRole.name} className={active} >
+                                            <td  className={className}>
+                                                <div className="flex items-center gap-4 ">
                                                     {
-                                                        idEditRow === itemRole.id && isEdit ? (
+                                                        idEditRow === itemRole.id && isEdit && itemRole.id > 3 ? (
                                                             <div className="relative h-10 w-full min-w-[200px]">
                                                                 <input
                                                                     onChange={(e) => setNewName(e.target.value)}

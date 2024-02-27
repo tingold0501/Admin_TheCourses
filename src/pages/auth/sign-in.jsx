@@ -32,7 +32,7 @@ export function SignIn() {
   const [password, setPassword] = useState('');
   const urlApi = 'http://localhost/api/';
 
-  const checkLogin = () => {
+  const checkLoginAdmin = () => {
     if (email == '') {
       toast.error('🦄 Email Null!', {
         position: "top-right",
@@ -61,7 +61,7 @@ export function SignIn() {
       // Send a POST request
       axios({
         method: 'post',
-        url: urlApi + 'checkLogin',
+        url: urlApi + 'loginAdmin',
         data: {
           email:email,
           password:password
@@ -113,6 +113,7 @@ export function SignIn() {
               onChange={(e) => setEmail(e.target.value)}
               size="lg"
               placeholder="name@mail.com"
+              
               className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
               labelProps={{
                 className: "before:content-none after:content-none",
@@ -150,7 +151,7 @@ export function SignIn() {
             }
             containerProps={{ className: "-ml-2.5" }}
           />
-          <Button onClick={checkLogin} className="mt-6" fullWidth>
+          <Button onClick={checkLoginAdmin} className="mt-6" fullWidth>
             Sign In
           </Button>
 
