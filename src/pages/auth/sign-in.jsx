@@ -30,7 +30,8 @@ export function SignIn() {
   <ToastContainer />
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const urlApi = 'http://127.0.0.1:8000/api/';
+  const urlApi = 'http://localhost/api/';
+
   const checkLogin = () => {
     if (email == '') {
       toast.error('🦄 Email Null!', {
