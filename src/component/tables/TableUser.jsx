@@ -228,9 +228,9 @@ function TableUser() {
                                         ? ""
                                         : "border-b border-blue-gray-50"
                                         }`;
-
+                                    const activeUser = `${itemUsers.id ==1 ?"disable-row":""}`;
                                     return (
-                                        <tr key={itemUsers.name}>
+                                        <tr key={itemUsers.name} className={activeUser}>
                                             <td className={className}>
                                                 <div className="flex items-center gap-4">
                                                     {/* <Avatar src={img} alt={name} size="sm" variant="rounded" /> */}
@@ -379,7 +379,7 @@ function TableUser() {
                                                         href="#"
                                                         className="text-xs font-semibold text-blue-gray-600"
                                                     >
-                                                        Edit Name
+                                                        Edit
                                                     </Typography>
 
                                                 )}
