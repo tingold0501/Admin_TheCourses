@@ -14,6 +14,7 @@ import {
     Chip,
 } from "@material-tailwind/react";
 import ModalUser from '../ModalUser';
+import ModalEditUser from '../ModalUser/ModalEditUser';
 
 function TableUser() {
     const urlApi = 'http://localhost/api/'
@@ -200,7 +201,6 @@ function TableUser() {
                         Users Table
                     </Typography>
                     <ModalUser />
-
                 </CardHeader>
                 <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
                     <table className="w-full min-w-[640px] table-auto">
@@ -373,17 +373,16 @@ function TableUser() {
                                                     </Typography>
 
                                                 ) : (
-                                                    <Typography
-                                                        onClick={(e) => editUserName(itemUsers.id, itemUsers.name)}
-                                                        as="a"
-                                                        href="#"
-                                                        className="text-xs font-semibold text-blue-gray-600"
-                                                    >
-                                                        Edit
-                                                    </Typography>
-
+                                                    // <Typography
+                                                    //     onClick={(e) => editUserName(itemUsers.id, itemUsers.name)}
+                                                    //     as="a"
+                                                    //     href="#"
+                                                    //     className="text-xs font-semibold text-blue-gray-600"
+                                                    // >
+                                                    //     Edit
+                                                    // </Typography>
+                                                    <ModalEditUser/>
                                                 )}
-
                                             </td>
                                             <td className={className}>
                                                 <Typography
