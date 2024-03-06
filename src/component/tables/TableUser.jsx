@@ -381,7 +381,7 @@ function TableUser() {
                                                     // >
                                                     //     Edit
                                                     // </Typography>
-                                                    <ModalEditUser/>
+                                                    <ModalEditUser name = {itemUsers.name} email = {itemUsers.email}/>
                                                 )}
                                             </td>
                                             <td className={className}>
