@@ -17,8 +17,9 @@ import ModalUser from '../ModalUser';
 import ModalEditUser from '../ModalUser/ModalEditUser';
 
 function TableUser() {
-    const urlApi = 'http://localhost/api/'
+    const urlApi = 'http://localhost/api/';
     const [users, setUsers] = useState([]);
+    const [isEdit, setIsEdit] = useState(false);
     <ToastContainer
         position="top-right"
         autoClose={1000}
@@ -237,7 +238,7 @@ function TableUser() {
                                                     { idEditRow === itemUsers.id && isEditUserName  ? (
                                                         <div className="relative h-10 w-full min-w-[200px]">
                                                         <input
-                                                            onChange={(e) => setNewName(e.target.value)}
+                                                            onChange={(e) => setIsEdit(true)}
                                                             className="peer h-full w-full rounded-[7px] border border-green-500 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-green-500 placeholder-shown:border-t-green-500 focus:border-2 focus:border-green-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                                                             placeholder=" "
                                                         />
@@ -255,7 +256,7 @@ function TableUser() {
                                                                 {itemUsers.name}
                                                             </Typography>
                                                             <Typography className="text-xs cursor-pointer font-normal text-blue-gray-500"
-                                                                onClick = {(e) => editUserEmail(itemUsers.id, itemUsers.email)}
+                                                                onClick = {(e) => setIsEdit(true)}
                                                                 >
                                                                 {itemUsers.email}
                                                             </Typography>
@@ -381,7 +382,7 @@ function TableUser() {
                                                     // >
                                                     //     Edit
                                                     // </Typography>
-                                                    <ModalEditUser name = {itemUsers.name} email = {itemUsers.email}/>
+                                                    <ModalEditUser id = {itemUsers.id} name = {itemUsers.name} email = {itemUsers.email} isEdit = {isEdit}/>
                                                 )}
                                             </td>
                                             <td className={className}>
