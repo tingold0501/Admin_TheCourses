@@ -161,16 +161,31 @@ function TableUser() {
                         }
                         else if (res.data.check == false) {
                             console.log(res.data.msg);
-                            toast.warning('🦄' + res.data.msg, {
-                                position: "top-right",
-                                autoClose: 1000,
-                                hideProgressBar: false,
-                                closeOnClick: true,
-                                pauseOnHover: true,
-                                draggable: true,
-                                progress: undefined,
-                                theme: "light",
-                            });
+                            if(res.data.msg.id){
+                                toast.warning('🦄' + res.data.msg.id, {
+                                    position: "top-right",
+                                    autoClose: 1000,
+                                    hideProgressBar: false,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                    draggable: true,
+                                    progress: undefined,
+                                    theme: "light",
+                                });
+                            }
+                            else if(res.data.msg.name){
+                                toast.warning('🦄' + res.data.msg.name, {
+                                    position: "top-right",
+                                    autoClose: 1000,
+                                    hideProgressBar: false,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                    draggable: true,
+                                    progress: undefined,
+                                    theme: "light",
+                                });
+                            }
+                            
                         }
                     })
                 }
@@ -374,15 +389,15 @@ function TableUser() {
                                                     </Typography>
 
                                                 ) : (
-                                                    // <Typography
-                                                    //     onClick={(e) => editUserName(itemUsers.id, itemUsers.name)}
-                                                    //     as="a"
-                                                    //     href="#"
-                                                    //     className="text-xs font-semibold text-blue-gray-600"
-                                                    // >
-                                                    //     Edit
-                                                    // </Typography>
-                                                    <ModalEditUser id = {itemUsers.id} name = {itemUsers.name} email = {itemUsers.email} isEdit = {isEdit}/>
+                                                    <Typography
+                                                        onClick={(e) => editUserName(itemUsers.id, itemUsers.name)}
+                                                        as="a"
+                                                        href="#"
+                                                        className="text-xs font-semibold text-blue-gray-600"
+                                                    >
+                                                        Edit
+                                                    </Typography>
+                                                    // <ModalEditUser id = {itemUsers.id} name = {itemUsers.name} email = {itemUsers.email} isEdit = {isEdit}/>
                                                 )}
                                             </td>
                                             <td className={className}>
