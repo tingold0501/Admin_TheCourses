@@ -94,8 +94,7 @@ function TableUser() {
     const editUserEmail = (id, email) => {
         setEditUserEmail(true);
         setIdEditRow(id);
-        console.log(id, email);
-
+        console.log(id, email,isEditUserEmail);
     }
 
     const changeRole = (id,name) =>{
@@ -103,96 +102,7 @@ function TableUser() {
         setIdEditRow(id);
         console.log(id,name,isEditUserRole);
     }
-    const exitEditMode = (id, name) => {
-        setEditUserName(false);
-        if (name == newName) {
-            toast.warning('🦄 ' + name + ' Chưa Được Thay Đổi!', {
-                position: "top-right",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
-        }
-        else if (name == "") {
-            toast.warning('🦄 Tên Role Không Được Rỗng!', {
-                position: "top-right",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
-        }
-        else {
-            Swal.fire({
-                title: "Bạn Chắc Chắn?",
-                text: "Bạn Muốn Thay Đổi  " + "[ " + name + " ] " + "Thành : [ " + newName + " ]",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Có!"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    axios({
-                        method: 'post',
-                        url: urlApi + 'updateNameUser',
-                        data: {
-                            id: id,
-                            name: newName
-                        }
-                    }).then((res) => {
-                        if (res.data.check == true) {
-                            Swal.fire({
-                                title: "Thay Đổi Thành Công!",
-                                text: "Đã Thay Đổi Thành Công.",
-                                icon: "success"
-                            });
-                            setTimeout(() => {
-                                window.location.reload();
-                            }, 1000);
-
-                        }
-                        else if (res.data.check == false) {
-                            console.log(res.data.msg);
-                            if(res.data.msg.id){
-                                toast.warning('🦄' + res.data.msg.id, {
-                                    position: "top-right",
-                                    autoClose: 1000,
-                                    hideProgressBar: false,
-                                    closeOnClick: true,
-                                    pauseOnHover: true,
-                                    draggable: true,
-                                    progress: undefined,
-                                    theme: "light",
-                                });
-                            }
-                            else if(res.data.msg.name){
-                                toast.warning('🦄' + res.data.msg.name, {
-                                    position: "top-right",
-                                    autoClose: 1000,
-                                    hideProgressBar: false,
-                                    closeOnClick: true,
-                                    pauseOnHover: true,
-                                    draggable: true,
-                                    progress: undefined,
-                                    theme: "light",
-                                });
-                            }
-                            
-                        }
-                    })
-                }
-            })
-
-        }
-    };
+  
     useEffect(() => {
         fetch(urlApi + "getAllDataUser")
             .then((res) => res.json())
@@ -250,7 +160,7 @@ function TableUser() {
                                             <td className={className}>
                                                 <div className="flex items-center gap-4">
                                                     {/* <Avatar src={img} alt={name} size="sm" variant="rounded" /> */}
-                                                    { idEditRow === itemUsers.id && isEditUserName  ? (
+                                                    {/* { idEditRow === itemUsers.id && isEditUserName  ? (
                                                         <div className="relative h-10 w-full min-w-[200px]">
                                                         <input
                                                             onChange={(e) => setIsEdit(true)}
@@ -261,22 +171,23 @@ function TableUser() {
                                                             {itemUsers.name}
                                                         </label>
                                                     </div>
-                                                    ) : (
+                                                    ) : ( */}
                                                         <div>
                                                             <Typography
                                                                 variant="small"
                                                                 color="blue-gray"
-                                                                className="font-semibold"
+                                                                className="font-semibold cursor-pointer"
+                                                                onClick={(e) => editUserName(itemUsers.id, itemUsers.name)}
                                                             >
                                                                 {itemUsers.name}
                                                             </Typography>
                                                             <Typography className="text-xs cursor-pointer font-normal text-blue-gray-500"
-                                                                onClick = {(e) => setIsEdit(true)}
+                                                                onClick = {(e) => editUserEmail(itemUsers.id, itemUsers.email)}
                                                                 >
                                                                 {itemUsers.email}
                                                             </Typography>
                                                         </div>
-                                                    )}
+                                                    {/* )} */}
                                                 </div>
                                             </td>
 
@@ -377,7 +288,7 @@ function TableUser() {
 
                                                 </Typography>
                                             </td>
-                                            <td className={className}>
+                                            {/* <td className={className}>
                                                 {idEditRow === itemUsers.id && isEditUserName ?  (
                                                     <Typography
                                                         onClick={(e) => exitEditMode(itemUsers.id, itemUsers.name)}
@@ -397,9 +308,32 @@ function TableUser() {
                                                     >
                                                         Edit
                                                     </Typography>
-                                                    // <ModalEditUser id = {itemUsers.id} name = {itemUsers.name} email = {itemUsers.email} isEdit = {isEdit}/>
                                                 )}
-                                            </td>
+                                            </td> */}
+                                             {/* <td className={className}>
+                                                {idEditRow === itemUsers.id && isEditUserName ?  (
+                                                    <Typography
+                                                        onClick={(e) => exitEditMode(itemUsers.id, itemUsers.name)}
+                                                        as="a"
+                                                        href="#"
+                                                        className="text-xs font-semibold text-blue-gray-600"
+                                                    >
+                                                        Save
+                                                    </Typography>
+
+                                                ) : (
+                                                    <Typography
+                                                        onClick={(e) => editUserName(itemUsers.id, itemUsers.name)}
+                                                        as="a"
+                                                        href="#"
+                                                        className="text-xs font-semibold text-blue-gray-600"
+                                                    >
+                                                        Edit
+                                                    </Typography>
+                                                )}
+                                            </td> */}
+                                            {/* <ModalEditUser id = {itemUsers.id} name = {itemUsers.name} email = {itemUsers.email} isEdit = {isEdit}/> */}
+
                                             <td className={className}>
                                                 <Typography
                                                     onClick={(e) => deleteUser(itemUsers.id, itemUsers.name)}
